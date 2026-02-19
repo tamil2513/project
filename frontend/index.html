@@ -1,0 +1,674 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Shree Photography</title>
+<link rel="icon" type="image/png" href="assets/shree-logo.png" />
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0a0a0f;--surf:#111118;--card:#16161f;--card2:#1c1c28;
+  --bdr:#252535;--gold:#c9a84c;--gold2:#8a6f2e;--goldg:rgba(201,168,76,.12);--goldl:#e8c96a;
+  --txt:#f0ede8;--txt2:#9a9ab0;--txt3:#4a4a6a;
+  --grn:#2ecc71;--red:#e74c3c;--amb:#f39c12;
+  --r:12px;--rs:8px;--sh:0 4px 24px rgba(0,0,0,.5);--shg:0 0 24px rgba(201,168,76,.2)
+}
+html,body{height:100%;overflow:hidden;background:var(--bg)}
+body{font-family:'DM Sans',sans-serif;color:var(--txt);font-size:14px;line-height:1.5}
+::-webkit-scrollbar{width:4px;height:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold2)}
+
+#shell{display:flex;height:100vh}
+
+/* ── Sidebar ── */
+#sidebar{width:230px;min-width:230px;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column}
+
+/* UPDATED: LOGO ONLY STYLE */
+.slogo {
+  padding: 35px 20px;
+  border-bottom: 1px solid var(--bdr);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.slogo-img {
+  width: 90px;
+  height: 90px;
+  object-fit: contain;
+  display: block;
+  /* Adds a subtle glow to make the logo pop on dark background */
+  filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.15));
+}
+
+.snav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+.slbl{font-size:10px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;padding:8px 10px 3px}
+.si{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--rs);cursor:pointer;color:var(--txt2);font-size:13px;font-weight:500;transition:all .15s;border:1px solid transparent;user-select:none}
+.si:hover{background:var(--card);color:var(--txt)}
+.si.on{background:var(--goldg);color:var(--gold);border-color:rgba(201,168,76,.18)}
+.si-ic{font-size:15px;width:20px;text-align:center;flex-shrink:0}
+.si-badge{margin-left:auto;background:var(--gold);color:var(--bg);font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;min-width:20px;text-align:center}
+.sclock{padding:14px 20px;border-top:1px solid var(--bdr)}
+.sclock .tm{font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--gold);font-weight:500}
+.sclock .dt{font-size:10px;color:var(--txt3);margin-top:2px}
+
+/* ── Main ── */
+#main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+#topbar{display:flex;align-items:center;padding:0 24px;height:56px;border-bottom:1px solid var(--bdr);background:var(--surf);gap:12px;flex-shrink:0}
+#topbar h2{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;flex:1}
+#statsbar{display:flex;gap:1px;background:var(--bdr);border-bottom:1px solid var(--bdr);flex-shrink:0}
+.st{flex:1;background:var(--surf);padding:11px 16px}
+.st .sl{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em}
+.st .sv{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold);font-weight:700}
+.st .ss{font-size:10px;color:var(--txt3)}
+
+/* ── Pages ── */
+#content{flex:1;overflow:hidden;position:relative}
+.page{position:absolute;inset:0;overflow-y:auto;padding:20px 22px;display:none}
+.page.on{display:block}
+
+/* ── Cards ── */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
+.ch{display:flex;align-items:center;gap:9px;padding:11px 16px;background:var(--card2);border-bottom:1px solid var(--bdr)}
+.ch h3{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+.cb{padding:16px}
+
+/* ── Grid ── */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
+.g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:13px}
+.g5{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:13px}
+.span2{grid-column:1/-1}
+
+/* ── Fields ── */
+.f{display:flex;flex-direction:column;gap:5px}
+.f label{font-size:10px;color:var(--txt2);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
+input[type=text],input[type=number],input[type=date],select,textarea{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--txt);font-family:'DM Sans',sans-serif;font-size:13.5px;padding:9px 12px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;-webkit-appearance:none}
+input:focus,select:focus{border-color:var(--gold2);box-shadow:0 0 0 3px rgba(201,168,76,.08)}
+select option{background:var(--card2)}
+input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6) sepia(1) saturate(3) hue-rotate(5deg);cursor:pointer}
+
+/* ── Payment breakdown ── */
+.pay-summary{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rs);padding:10px 12px;display:flex;flex-direction:column;gap:4px}
+.pay-row{display:flex;justify-content:space-between;font-size:12px;color:var(--txt2)}
+.pay-row.total{border-top:1px solid var(--bdr);padding-top:5px;margin-top:2px;font-weight:600;color:var(--txt);font-size:13px}
+.pay-row.balance{color:var(--gold);font-family:'Playfair Display',serif;font-size:15px;font-weight:700}
+
+/* ── Checkboxes ── */
+.ck-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.ck{display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rs);cursor:pointer;transition:all .15s;user-select:none}
+.ck:hover{border-color:var(--gold2)}
+.ck.on{border-color:var(--gold);background:var(--goldg)}
+.ck input{display:none}
+.ck-box{width:17px;height:17px;border:1.5px solid var(--bdr);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;transition:all .15s}
+.ck.on .ck-box{background:var(--gold);border-color:var(--gold);color:var(--bg)}
+.ck span{font-size:13px;color:var(--txt2)}
+.ck.on span{color:var(--txt)}
+
+/* ── Radio pills ── */
+.rpills{display:flex;gap:7px;flex-wrap:wrap}
+.rpill{padding:7px 17px;background:var(--card2);border:1px solid var(--bdr);border-radius:99px;cursor:pointer;font-size:13px;color:var(--txt2);transition:all .15s;user-select:none}
+.rpill:hover{border-color:var(--gold2);color:var(--txt)}
+.rpill.on{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:600}
+
+/* ── Buttons ── */
+.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 17px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s;white-space:nowrap;user-select:none}
+.btn:disabled{opacity:.4;cursor:not-allowed}
+.btn-gold{background:var(--gold);color:var(--bg)}
+.btn-gold:hover:not(:disabled){background:var(--goldl);box-shadow:var(--shg);transform:translateY(-1px)}
+.btn-out{background:transparent;color:var(--txt2);border:1px solid var(--bdr)}
+.btn-out:hover:not(:disabled){border-color:var(--txt2);color:var(--txt)}
+.btn-del{background:transparent;color:var(--red);border:1px solid rgba(231,76,60,.25)}
+.btn-del:hover:not(:disabled){background:rgba(231,76,60,.08)}
+.btn-sm{padding:5px 11px;font-size:11.5px}
+.brow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:4px}
+
+/* ── Search & filter ── */
+.sbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:9px 14px;margin-bottom:12px}
+.sbar input{flex:1;background:transparent;border:none;font-size:14px;color:var(--txt)}
+.sbar input:focus{box-shadow:none;border:none}
+.sbar-ic{color:var(--txt3);font-size:16px}
+.frow{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
+.fchip{padding:5px 13px;border-radius:99px;font-size:11.5px;cursor:pointer;border:1px solid var(--bdr);color:var(--txt2);background:var(--card);transition:all .15s;user-select:none}
+.fchip:hover{border-color:var(--gold2)}
+.fchip.on{background:var(--goldg);border-color:var(--gold);color:var(--gold)}
+
+/* ── Booking cards ── */
+#blist{display:flex;flex-direction:column;gap:7px}
+.bcard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);display:flex;align-items:stretch;overflow:hidden;transition:border-color .2s,transform .15s}
+.bcard:hover{border-color:var(--gold2);transform:translateY(-1px)}
+.bstrip{width:4px;flex-shrink:0}
+.bstrip.confirmed{background:var(--grn)}
+.bstrip.cancelled{background:var(--red)}
+.bstrip.completed{background:var(--gold)}
+.bbody{flex:1;padding:12px 15px;display:flex;flex-direction:column;gap:4px;min-width:0}
+.br1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.bname{font-family:'Playfair Display',serif;font-size:16px;font-weight:600}
+.bid-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3);padding:2px 7px;border:1px solid var(--bdr);border-radius:99px}
+.bstat{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:99px;text-transform:uppercase}
+.bstat.confirmed{background:rgba(46,204,113,.1);color:var(--grn);border:1px solid rgba(46,204,113,.2)}
+.bstat.cancelled{background:rgba(231,76,60,.1);color:var(--red);border:1px solid rgba(231,76,60,.2)}
+.bstat.completed{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.2)}
+.br2{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--txt2);flex-wrap:wrap}
+.bdates{color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:11px}
+.br3{font-size:11.5px;color:var(--txt3)}
+.bacts{display:flex;flex-direction:column;justify-content:center;gap:3px;padding:10px;border-left:1px solid var(--bdr);background:var(--card2);flex-shrink:0}
+
+/* ── Conflict banner ── */
+#conflict{display:none;background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);border-radius:var(--rs);padding:12px 16px;margin-bottom:14px;color:#ff8a80;font-size:13px;line-height:1.7}
+#conflict.show{display:block}
+#editbar{display:none;padding:9px 15px;background:var(--goldg);border:1px solid rgba(201,168,76,.25);border-radius:var(--rs);margin-bottom:14px;font-size:13px;color:var(--gold)}
+
+/* ── Modal ── */
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center}
+#ov.open{display:flex}
+#modal{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:26px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.6)}
+#modal h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:10px}
+#modal p{color:var(--txt2);font-size:13px;line-height:1.7;white-space:pre-wrap}
+.mbr{display:flex;gap:9px;margin-top:18px;justify-content:flex-end}
+
+/* ── Toast ── */
+#toasts{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:7px}
+.toast{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rs);padding:11px 16px;font-size:13px;box-shadow:var(--sh);animation:tsIn .22s ease;max-width:340px;display:flex;align-items:center;gap:9px}
+.toast.ok{border-left:3px solid var(--grn)}
+.toast.err{border-left:3px solid var(--red)}
+.toast.info{border-left:3px solid var(--gold)}
+@keyframes tsIn{from{transform:translateX(80px);opacity:0}to{transform:none;opacity:1}}
+
+/* ── Loader ── */
+#loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:14px}
+#loader h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold)}
+#loader p{color:var(--txt3);font-size:12px}
+.spin{width:38px;height:38px;border:3px solid var(--bdr);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite}
+@keyframes sp{to{transform:rotate(360deg)}}
+.empty{text-align:center;padding:56px 20px;color:var(--txt3)}
+.empty-ic{font-size:44px;margin-bottom:14px}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="spin"></div>
+  <h2>Shree Photography</h2>
+  <p id="loader-msg">Starting up…</p>
+</div>
+
+<div id="shell" style="display:none">
+
+  <aside id="sidebar">
+    <div class="slogo">
+      <img src="assets/shree-logo.png" alt="Logo" class="slogo-img"> 
+    </div>
+    <nav class="snav">
+      <div class="slbl">Navigation</div>
+      <div class="si on" data-pg="bookings"><span class="si-ic">📋</span>All Bookings<span class="si-badge" id="badge">0</span></div>
+      <div class="si" data-pg="form"><span class="si-ic">✦</span>New Booking</div>
+      <div class="slbl" style="margin-top:8px">Folders</div>
+      <div class="si" id="btn-invoices"><span class="si-ic">📁</span>Open Invoices</div>
+      <div class="si" id="btn-calendars"><span class="si-ic">📁</span>Open Calendars</div>
+    </nav>
+    <div class="sclock">
+      <div class="tm" id="clock">--:--:--</div>
+      <div class="dt" id="clkdate">Loading…</div>
+    </div>
+  </aside>
+
+  <div id="main">
+    <div id="topbar">
+      <h2 id="ptitle">All Bookings</h2>
+      <button class="btn btn-gold" onclick="goNew()">＋ &nbsp;New Booking</button>
+    </div>
+
+    <div id="statsbar">
+      <div class="st"><div class="sl">Total</div><div class="sv" id="s-tot">—</div></div>
+      <div class="st"><div class="sl">Confirmed</div><div class="sv" id="s-con" style="color:var(--grn)">—</div></div>
+      <div class="st"><div class="sl">Cancelled</div><div class="sv" id="s-can" style="color:var(--red)">—</div></div>
+      <div class="st"><div class="sl">Completed</div><div class="sv" id="s-com" style="color:var(--amb)">—</div></div>
+      <div class="st"><div class="sl">Total Revenue</div><div class="sv" id="s-rev">—</div><div class="ss" id="s-pend"></div></div>
+    </div>
+
+    <div id="content">
+
+      <div class="page on" id="page-bookings">
+        <div class="sbar">
+          <span class="sbar-ic">🔍</span>
+          <input type="text" id="search" placeholder="Search by name, event type, ID, status…" oninput="renderList()"/>
+        </div>
+        <div class="frow">
+          <div class="fchip on" data-f="all"      onclick="setF('all',this)">All</div>
+          <div class="fchip"    data-f="confirmed" onclick="setF('confirmed',this)">✅ Confirmed</div>
+          <div class="fchip"    data-f="cancelled" onclick="setF('cancelled',this)">❌ Cancelled</div>
+          <div class="fchip"    data-f="completed" onclick="setF('completed',this)">⭐ Completed</div>
+        </div>
+        <div id="blist"></div>
+      </div>
+
+      <div class="page" id="page-form">
+        <div style="max-width:900px;padding-bottom:40px">
+
+          <div id="conflict"></div>
+          <div id="editbar">✏️ Editing booking <strong id="eid"></strong></div>
+
+          <div class="card">
+            <div class="ch"><span>👤</span><h3>Client Details</h3></div>
+            <div class="cb">
+              <div class="g2">
+                <div class="f"><label>Client Name *</label><input type="text" id="f-name" placeholder="Full name"/></div>
+                <div class="f"><label>Contact Number *</label><input type="text" id="f-phone" placeholder="+91 98765 43210"/></div>
+                <div class="f"><label>Event Type *</label>
+                  <select id="f-etype">
+                    <option>Wedding</option><option>Engagement</option><option>Reception</option>
+                    <option>Baby Shower</option><option>Birthday</option><option>Corporate</option><option>Other</option>
+                  </select>
+                </div>
+                <div class="f"><label>Event Time</label><input type="text" id="f-time" placeholder="e.g. 10:00 AM"/></div>
+                <div class="f span2"><label>Event Venue</label><input type="text" id="f-venue" placeholder="Hall name or address"/></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="ch"><span>📅</span><h3>Event Dates</h3></div>
+            <div class="cb">
+              <div class="g2">
+                <div class="f"><label>Start Date *</label><input type="date" id="f-start" onchange="checkConflict()"/></div>
+                <div class="f"><label>End Date *</label><input type="date" id="f-end" onchange="checkConflict()"/></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="ch"><span>📦</span><h3>Services / Packages</h3></div>
+            <div class="cb">
+              <div class="ck-grid" id="pkgs">
+                <label class="ck" data-k="traditional_photo"><input type="checkbox"/><div class="ck-box">✓</div><span>Traditional Photo</span></label>
+                <label class="ck" data-k="candid_photo"><input type="checkbox"/><div class="ck-box">✓</div><span>Candid Photo</span></label>
+                <label class="ck" data-k="drone"><input type="checkbox"/><div class="ck-box">✓</div><span>Drone</span></label>
+                <label class="ck" data-k="outdoor_photoshoot"><input type="checkbox"/><div class="ck-box">✓</div><span>Outdoor Photoshoot</span></label>
+                <label class="ck" data-k="traditional_video"><input type="checkbox"/><div class="ck-box">✓</div><span>Traditional Video</span></label>
+                <label class="ck" data-k="candid_video"><input type="checkbox"/><div class="ck-box">✓</div><span>Candid Video</span></label>
+                <label class="ck" data-k="led_tv"><input type="checkbox"/><div class="ck-box">✓</div><span>LED TV</span></label>
+                <label class="ck" data-k="outdoor_video"><input type="checkbox"/><div class="ck-box">✓</div><span>Outdoor Video Shoot</span></label>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="ch"><span>🏷</span><h3>Package Tier</h3></div>
+            <div class="cb">
+              <div class="rpills" id="tiers">
+                <div class="rpill on" data-t="Basic">Basic</div>
+                <div class="rpill" data-t="Premium">Premium</div>
+                <div class="rpill" data-t="Diamond">Diamond</div>
+                <div class="rpill" data-t="Gold">Gold</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="ch"><span>💰</span><h3>Fees & Payment</h3></div>
+            <div class="cb">
+              <div class="g3" style="margin-bottom:14px">
+                <div class="f">
+                  <label>Package Amount (Rs.) *</label>
+                  <input type="number" id="f-amt" placeholder="0" oninput="calcBal()"/>
+                </div>
+                <div class="f">
+                  <label>Advance 1 (Rs.)</label>
+                  <input type="number" id="f-adv1" placeholder="0" oninput="calcBal()"/>
+                </div>
+                <div class="f">
+                  <label>Advance 2 (Rs.)</label>
+                  <input type="number" id="f-adv2" placeholder="0" oninput="calcBal()"/>
+                </div>
+              </div>
+
+              <div class="pay-summary" id="pay-summary">
+                <div class="pay-row"><span>Package Amount</span><span id="ps-amt">Rs. 0.00</span></div>
+                <div class="pay-row"><span>Advance 1</span><span id="ps-adv1">Rs. 0.00</span></div>
+                <div class="pay-row"><span>Advance 2</span><span id="ps-adv2">Rs. 0.00</span></div>
+                <div class="pay-row total"><span>Total Advance Paid</span><span id="ps-total-adv">Rs. 0.00</span></div>
+                <div class="pay-row balance"><span>Balance Due</span><span id="ps-bal">Rs. 0.00</span></div>
+              </div>
+
+              <div style="margin-top:14px" class="g2">
+                <div class="f">
+                  <label>Payment Status *</label>
+                  <select id="f-status">
+                    <option>Confirmed</option><option>Cancelled</option><option>Completed</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="ch"><span>➕</span><h3>Add-ons & Extras</h3></div>
+            <div class="cb">
+              <div class="g4">
+                <div class="f"><label>Album Type</label><input type="text" id="f-atype" placeholder="Flush, Coffee…"/></div>
+                <div class="f"><label>Album Count</label><input type="number" id="f-acount" placeholder="1"/></div>
+                <div class="f"><label>Frame 12×18</label><input type="number" id="f-f1" placeholder="0"/></div>
+                <div class="f"><label>Frame 16×24</label><input type="number" id="f-f2" placeholder="0"/></div>
+                <div class="f"><label>Frame 20×30</label><input type="number" id="f-f3" placeholder="0"/></div>
+                <div class="f"><label>Calendar Add-on</label>
+                  <select id="f-cal"><option>No</option><option>Yes</option></select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="brow">
+            <button class="btn btn-gold" id="save-btn" onclick="saveBooking()">💾 &nbsp;Save Booking</button>
+            <button class="btn btn-out" onclick="goNew()">🗑 &nbsp;Clear Form</button>
+            <div id="edit-btns" style="display:none;display:flex;gap:8px;flex-wrap:wrap">
+              <button class="btn btn-out" onclick="regenPDF()">📄 &nbsp;Re-generate Invoice</button>
+              <button class="btn btn-out" onclick="exportICS()">📅 &nbsp;Export Calendar (.ics)</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="ov" onclick="ovClick(event)">
+  <div id="modal">
+    <h3 id="m-title"></h3>
+    <p id="m-body"></p>
+    <div class="mbr" id="m-btns"></div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ── State ── */
+const BASE = (typeof window.API !== 'undefined') ? window.API : 'http://127.0.0.1:5050/api'
+let allBookings = [], filterMode = 'all', editingId = null
+let appPaths = { invoices: '', calendars: '' }
+
+/* ── API ── */
+async function api(method, path, body) {
+  const opts = { method, headers:{'Content-Type':'application/json'} }
+  if (body) opts.body = JSON.stringify(body)
+  const r = await fetch(BASE + path, opts)
+  if (!r.ok) { const e = await r.json().catch(()=>{}); throw new Error((e&&e.error)||r.statusText) }
+  return r.json()
+}
+
+/* ── Init ── */
+async function init() {
+  await refresh()
+  try { appPaths = await api('GET', '/paths') } catch(e) {}
+  document.getElementById('loader').style.display = 'none'
+  document.getElementById('shell').style.display  = 'flex'
+  startClock()
+  initCheckboxes()
+  initTiers()
+  initNav()
+}
+
+/* ── Clock ── */
+function startClock() {
+  const tick = () => {
+    const n = new Date()
+    document.getElementById('clock').textContent   = n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
+    document.getElementById('clkdate').textContent = n.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long',year:'numeric'})
+  }
+  tick(); setInterval(tick, 1000)
+}
+
+/* ── Nav ── */
+function initNav() {
+  document.querySelectorAll('.si[data-pg]').forEach(el => {
+    el.addEventListener('click', () => {
+      if (el.dataset.pg === 'form') goNew()
+      else showPage(el.dataset.pg)
+    })
+  })
+
+  document.getElementById('btn-invoices').addEventListener('click', async () => {
+    if (appPaths.invoices && window.electron) await window.electron.openFolder(appPaths.invoices)
+    else toast('Invoices folder: ' + (appPaths.invoices || 'invoices/'), 'info')
+  })
+
+  document.getElementById('btn-calendars').addEventListener('click', async () => {
+    if (appPaths.calendars && window.electron) await window.electron.openFolder(appPaths.calendars)
+    else toast('Calendars folder: ' + (appPaths.calendars || 'calendars/'), 'info')
+  })
+}
+
+function showPage(pg) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'))
+  document.querySelectorAll('.si[data-pg]').forEach(s => s.classList.remove('on'))
+  document.getElementById('page-'+pg).classList.add('on')
+  document.querySelector(`.si[data-pg="${pg}"]`)?.classList.add('on')
+  const titles = { bookings:'All Bookings', form: editingId ? `Edit Booking #${editingId}` : 'New Booking' }
+  document.getElementById('ptitle').textContent = titles[pg] || pg
+}
+
+function goNew() { editingId=null; clearForm(); showPage('form') }
+
+/* ── Refresh ── */
+async function refresh() {
+  const [rows, stats] = await Promise.all([api('GET','/bookings'), api('GET','/stats')])
+  allBookings = rows
+  document.getElementById('s-tot').textContent  = stats.total
+  document.getElementById('s-con').textContent  = stats.confirmed
+  document.getElementById('s-can').textContent  = stats.cancelled
+  document.getElementById('s-com').textContent  = stats.completed
+  document.getElementById('s-rev').textContent  = 'Rs. ' + Number(stats.revenue).toLocaleString('en-IN')
+  document.getElementById('s-pend').textContent = `Rs. ${Number(stats.pending_balance).toLocaleString('en-IN')} pending`
+  document.getElementById('badge').textContent  = stats.total
+  renderList()
+}
+
+/* ── List ── */
+function setF(f, el) {
+  filterMode = f
+  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'))
+  el.classList.add('on')
+  renderList()
+}
+
+function renderList() {
+  const q    = document.getElementById('search').value.toLowerCase()
+  const list = allBookings.filter(b => {
+    const st = (b.payment_status||'').toLowerCase()
+    if (filterMode !== 'all' && st !== filterMode) return false
+    if (!q) return true
+    return [b.client_name,b.event_type,b.payment_status,b.booking_id,b.event_venue]
+      .some(v => (v||'').toLowerCase().includes(q))
+  })
+
+  const wrap = document.getElementById('blist')
+  if (!list.length) {
+    wrap.innerHTML = `<div class="empty"><div class="empty-ic">📭</div><p>No bookings found.</p></div>`
+    return
+  }
+
+  const fmt = v => Number(v||0).toLocaleString('en-IN')
+  wrap.innerHTML = list.map(b => {
+    const st  = (b.payment_status||'').toLowerCase()
+    const cnt = (b.packages||'').split(',').filter(Boolean).length
+    const adv1 = parseFloat(b.advance1||0), adv2 = parseFloat(b.advance2||0)
+    return `
+    <div class="bcard">
+      <div class="bstrip ${st}"></div>
+      <div class="bbody">
+        <div class="br1">
+          <div class="bname">${x(b.client_name)}</div>
+          <div class="bid-tag">#${b.booking_id}</div>
+          <div class="bstat ${st}">${b.payment_status||''}</div>
+        </div>
+        <div class="br2">
+          <span class="bdates">📅 ${b.start_date} → ${b.end_date}</span>
+          <span>· ${x(b.event_type)}</span>
+          <span>· ${x(b.event_venue||'—')}</span>
+          <span>· ${cnt} service${cnt!==1?'s':''}</span>
+          <span>· ${x(b.package_tier||'Basic')}</span>
+        </div>
+        <div class="br3">
+          Rs. ${fmt(b.package_amount)} total &nbsp;|&nbsp;
+          Adv1: Rs. ${fmt(b.advance1)} &nbsp;|&nbsp;
+          Adv2: Rs. ${fmt(b.advance2)} &nbsp;|&nbsp;
+          Total Adv: Rs. ${fmt(adv1+adv2)} &nbsp;|&nbsp;
+          <strong>Balance: Rs. ${fmt(b.balance_due)}</strong>
+        </div>
+      </div>
+      <div class="bacts">
+        <button class="btn btn-out btn-sm" onclick="editBooking('${b.booking_id}')">✏️ Edit</button>
+        <button class="btn btn-out btn-sm" onclick="getPDF('${b.booking_id}')">📄 PDF</button>
+        <button class="btn btn-out btn-sm" onclick="getICS('${b.booking_id}')">📅 ICS</button>
+        <button class="btn btn-del btn-sm" onclick="askDelete('${b.booking_id}','${x(b.client_name)}')">🗑 Delete</button>
+      </div>
+    </div>`
+  }).join('')
+}
+
+/* ── Utils & Form ── */
+function initCheckboxes() {
+  document.querySelectorAll('#pkgs .ck').forEach(el => {
+    el.addEventListener('click', () => {
+      const cb = el.querySelector('input'); cb.checked = !cb.checked
+      el.classList.toggle('on', cb.checked)
+    })
+  })
+}
+function initTiers() {
+  document.querySelectorAll('#tiers .rpill').forEach(el => {
+    el.addEventListener('click', () => {
+      document.querySelectorAll('#tiers .rpill').forEach(r => r.classList.remove('on'))
+      el.classList.add('on')
+    })
+  })
+}
+function getPackages() { return [...document.querySelectorAll('#pkgs .ck.on')].map(e => e.dataset.k) }
+function setPackages(pkgs) {
+  document.querySelectorAll('#pkgs .ck').forEach(el => {
+    const on = pkgs.includes(el.dataset.k)
+    el.classList.toggle('on', on); el.querySelector('input').checked = on
+  })
+}
+function getTier() { return document.querySelector('#tiers .rpill.on')?.dataset.t || 'Basic' }
+function setTier(t) { document.querySelectorAll('#tiers .rpill').forEach(r => r.classList.toggle('on', r.dataset.t===t)) }
+
+function calcBal() {
+  const amt = parseFloat(document.getElementById('f-amt').value) || 0
+  const adv1 = parseFloat(document.getElementById('f-adv1').value) || 0
+  const adv2 = parseFloat(document.getElementById('f-adv2').value) || 0
+  const totalAdv = adv1 + adv2; const bal = amt - totalAdv
+  const fmt = n => 'Rs. ' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})
+  document.getElementById('ps-amt').textContent = fmt(amt)
+  document.getElementById('ps-adv1').textContent = fmt(adv1)
+  document.getElementById('ps-adv2').textContent = fmt(adv2)
+  document.getElementById('ps-total-adv').textContent = fmt(totalAdv)
+  document.getElementById('ps-bal').textContent = fmt(bal)
+  document.getElementById('ps-bal').style.color = bal < 0 ? 'var(--red)' : 'var(--gold)'
+}
+
+async function checkConflict() {
+  const s = document.getElementById('f-start').value, e = document.getElementById('f-end').value
+  const banner = document.getElementById('conflict')
+  if (!s || !e) { banner.classList.remove('show'); return }
+  try {
+    const res = await api('POST','/conflict',{ start_date:s, end_date:e, exclude_id:editingId||'' })
+    if (res.conflicts.length) {
+      const lines = res.conflicts.map(c => `• ${c.client_name} (${c.event_type}) — Clashes: ${c.clashing_dates.join(', ')}`)
+      banner.innerHTML = `<strong>⚠️ Date Conflict Detected</strong><br>${lines.join('<br>')}`
+      banner.classList.add('show')
+    } else banner.classList.remove('show')
+  } catch(e) { banner.classList.remove('show') }
+}
+
+async function saveBooking() {
+  const name = v('f-name'), phone = v('f-phone'), start = v('f-start'), end = v('f-end'), amt = v('f-amt'), status = v('f-status')
+  if (!name || !phone || !start || !end || !amt) { toast('Please fill all required fields (*)', 'err'); return }
+  if (end < start) { toast('End Date cannot be before Start Date', 'err'); return }
+
+  const adv1 = parseFloat(v('f-adv1')) || 0, adv2 = parseFloat(v('f-adv2')) || 0
+  const body = {
+    client_name: name, contact_number: phone, event_type: v('f-etype'), event_venue: v('f-venue'),
+    event_time: v('f-time'), start_date: start, end_date: end, packages: getPackages().join(','),
+    package_amount: amt, advance1: String(adv1), advance2: String(adv2),
+    balance_due: String((parseFloat(amt)||0) - adv1 - adv2), payment_status: status,
+    album_type: v('f-atype'), album_count: v('f-acount'), frame_12x18: v('f-f1'),
+    frame_16x24: v('f-f2'), frame_20x30: v('f-f3'), calendar_addon: v('f-cal'), package_tier: getTier(),
+  }
+
+  const btn = document.getElementById('save-btn'); btn.disabled = true; btn.textContent = 'Saving…'
+  try {
+    let saved = editingId ? await api('PUT', `/bookings/${editingId}`, body) : await api('POST', '/bookings', body)
+    toast('Booking saved!', 'ok')
+    try {
+      const pr = await api('POST', `/invoice/${saved.booking_id}`)
+      window.electron?.openFile(pr.path)
+    } catch(e) {}
+    await refresh(); goNew()
+  } catch(e) { toast('Save failed: '+e.message, 'err') } finally { btn.disabled = false; btn.innerHTML = '💾 &nbsp;Save Booking' }
+}
+
+async function editBooking(bid) {
+  const b = await api('GET', `/bookings/${bid}`); editingId = bid
+  set('f-name', b.client_name); set('f-phone', b.contact_number); set('f-etype', b.event_type); set('f-venue', b.event_venue)
+  set('f-time', b.event_time); set('f-start', b.start_date); set('f-end', b.end_date); set('f-amt', b.package_amount)
+  set('f-adv1', b.advance1); set('f-adv2', b.advance2); set('f-status', b.payment_status); set('f-atype', b.album_type)
+  set('f-acount', b.album_count); set('f-f1', b.frame_12x18); set('f-f2', b.frame_16x24); set('f-f3', b.frame_20x30)
+  set('f-cal', b.calendar_addon); setPackages((b.packages||'').split(',').filter(Boolean)); setTier(b.package_tier||'Basic')
+  calcBal(); document.getElementById('eid').textContent = '#'+bid; document.getElementById('editbar').style.display = 'block'
+  document.getElementById('edit-btns').style.display = 'flex'; showPage('form')
+}
+
+function clearForm() {
+  editingId = null; ['f-name','f-phone','f-venue','f-time','f-start','f-end','f-amt','f-adv1','f-adv2','f-atype','f-acount','f-f1','f-f2','f-f3'].forEach(id => set(id,''))
+  set('f-etype','Wedding'); set('f-status','Confirmed'); set('f-cal','No'); setPackages([]); setTier('Basic'); calcBal()
+  document.getElementById('editbar').style.display = 'none'; document.getElementById('edit-btns').style.display = 'none'
+}
+
+async function getPDF(bid) { try { const r = await api('POST', `/invoice/${bid}`); window.electron?.openFile(r.path) } catch(e) { toast('PDF error', 'err') } }
+async function getICS(bid) { try { const r = await api('POST', `/calendar/${bid}`); window.electron?.openFile(r.path) } catch(e) { toast('ICS error', 'err') } }
+async function regenPDF() { if (editingId) await getPDF(editingId) }
+async function exportICS() { if (editingId) await getICS(editingId) }
+
+function askDelete(bid, name) {
+  modal('Delete Booking', `Delete booking for ${name}?`, [
+    { label:'Cancel', fn:closeModal, outline:true },
+    { label:'Delete', fn: async () => { closeModal(); await api('DELETE', `/bookings/${bid}`); await refresh() }, danger:true },
+  ])
+}
+
+function modal(title, body, btns) {
+  document.getElementById('m-title').textContent = title; document.getElementById('m-body').textContent = body
+  const bc = document.getElementById('m-btns'); bc.innerHTML = ''
+  btns.forEach(b => {
+    const btn = document.createElement('button'); btn.textContent = b.label; btn.className = 'btn ' + (b.danger?'btn-del':b.outline?'btn-out':'btn-gold'); btn.onclick = b.fn; bc.appendChild(btn)
+  })
+  document.getElementById('ov').classList.add('open')
+}
+function closeModal() { document.getElementById('ov').classList.remove('open') }
+function ovClick(e) { if (e.target===document.getElementById('ov')) closeModal() }
+function toast(msg, type='info') {
+  const el = document.createElement('div'); el.className = `toast ${type}`; el.innerHTML = `<span>${type==='ok'?'✅':'💡'}</span><span>${msg}</span>`
+  document.getElementById('toasts').appendChild(el); setTimeout(() => el.remove(), 4000)
+}
+const v = id => document.getElementById(id)?.value?.trim()||''
+const set = (id,val) => { const el=document.getElementById(id); if(el) el.value=val||'' }
+const x = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+
+let _tries = 0
+function tryBoot() {
+  fetch(BASE+'/ping').then(()=>init()).catch(()=>{
+    _tries++; document.getElementById('loader-msg').textContent = `Starting backend… (${_tries})`
+    if (_tries < 40) setTimeout(tryBoot, 600)
+    else document.getElementById('loader-msg').textContent = '❌ Backend failed. Run: python3 backend/server.py'
+  })
+}
+tryBoot()
+</script>
+</body>
+</html>

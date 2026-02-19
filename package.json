@@ -1,0 +1,48 @@
+{
+  "name": "saree-photography",
+  "version": "1.0.0",
+  "description": "Saree Photography Booking System",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "build:win": "electron-builder --win --x64"
+  },
+  "build": {
+    "appId": "com.sareephotography.app",
+    "productName": "Saree Photography",
+    "directories": { "output": "dist" },
+    "files": [
+      "main.js",
+      "preload.js",
+      "frontend/**/*",
+      "backend/**/*",
+      "data/**/*",
+      "invoices/.gitkeep",
+      "calendars/.gitkeep"
+    ],
+    "extraResources": [
+      {
+        "from": "backend/dist/server",
+        "to": "server",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+      "target": [{ "target": "nsis", "arch": ["x64"] }],
+      "icon": "frontend/assets/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Saree Photography",
+      "installerIcon": "frontend/assets/icon.ico",
+      "uninstallerIcon": "frontend/assets/icon.ico"
+    }
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.0.0"
+  }
+}
