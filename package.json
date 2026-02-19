@@ -1,16 +1,23 @@
 {
-  "name": "saree-photography",
+  "name": "shree-photography",
   "version": "1.0.0",
-  "description": "Saree Photography Booking System",
+  "description": "Shree Photography Booking System",
   "main": "main.js",
+
   "scripts": {
     "start": "electron .",
     "build:win": "electron-builder --win --x64"
   },
+
   "build": {
-    "appId": "com.sareephotography.app",
-    "productName": "Saree Photography",
+    "appId": "com.shreephotography.app",
+
+    "productName": "Shree Photography",
+
+    "publish": null,
+
     "directories": { "output": "dist" },
+
     "files": [
       "main.js",
       "preload.js",
@@ -20,6 +27,7 @@
       "invoices/.gitkeep",
       "calendars/.gitkeep"
     ],
+
     "extraResources": [
       {
         "from": "backend/dist/server",
@@ -27,20 +35,25 @@
         "filter": ["**/*"]
       }
     ],
+
     "win": {
       "target": [{ "target": "nsis", "arch": ["x64"] }],
       "icon": "frontend/assets/shree-logo.ico"
     },
+
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true,
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
-      "shortcutName": "Saree Photography",
+
+      "shortcutName": "Shree Photography",
+
       "installerIcon": "frontend/assets/shree-logo.ico",
       "uninstallerIcon": "frontend/assets/shree-logo.ico"
     }
   },
+
   "devDependencies": {
     "electron": "^29.0.0",
     "electron-builder": "^24.0.0"
