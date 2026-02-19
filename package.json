@@ -29,7 +29,7 @@
     ],
     "win": {
       "target": [{ "target": "nsis", "arch": ["x64"] }],
-      "icon": "frontend/assets/icon.ico"
+      "icon": "frontend/assets/shree-logo.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -37,8 +37,8 @@
       "createDesktopShortcut": true,
       "createStartMenuShortcut": true,
       "shortcutName": "Saree Photography",
-      "installerIcon": "frontend/assets/icon.ico",
-      "uninstallerIcon": "frontend/assets/icon.ico"
+      "installerIcon": "frontend/assets/shree-logo.ico",
+      "uninstallerIcon": "frontend/assets/shree-logo.ico"
     }
   },
   "devDependencies": {
