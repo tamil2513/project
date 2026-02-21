@@ -4,211 +4,565 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Shree Photography</title>
-<link rel="icon" type="image/png" href="assets/shree-logo.ico" />
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+<link rel="icon" href="assets/shree-logo.ico"/>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400&family=Outfit:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
 <style>
+/* ────────────────────────────────────────────────
+   RESET & TOKENS
+──────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#0a0a0f;--surf:#111118;--card:#16161f;--card2:#1c1c28;
-  --bdr:#252535;--gold:#c9a84c;--gold2:#8a6f2e;--goldg:rgba(201,168,76,.12);--goldl:#e8c96a;
-  --txt:#f0ede8;--txt2:#9a9ab0;--txt3:#4a4a6a;
-  --grn:#2ecc71;--red:#e74c3c;--amb:#f39c12;
-  --r:12px;--rs:8px;--sh:0 4px 24px rgba(0,0,0,.5);--shg:0 0 24px rgba(201,168,76,.2)
+  --bg:#06060c; --bg2:#0b0b14; --surf:#0e0e1a; --card:#12121e; --card2:#171726; --card3:#1d1d30;
+  --bdr:#1c1c2e; --bdr2:#252540; --bdr3:#313155;
+  --gold:#c9a84c; --gold2:#a88535; --gold3:#7a5f20; --goldl:#ddb96a; --goldd:#f0d090;
+  --goldg:rgba(201,168,76,.09); --goldg2:rgba(201,168,76,.04); --goldbdr:rgba(201,168,76,.18);
+  --glow:0 0 40px rgba(201,168,76,.08);
+  --txt:#ede8e0; --txt2:#8a8aa8; --txt3:#38385a;
+  --grn:#34d399; --grn-bg:rgba(52,211,153,.08); --grn-bdr:rgba(52,211,153,.25);
+  --red:#f87171; --red-bg:rgba(248,113,113,.07); --red-bdr:rgba(248,113,113,.2);
+  --amb:#fbbf24; --amb-bg:rgba(251,191,36,.08); --amb-bdr:rgba(251,191,36,.2);
+  --blue:#60a5fa; --blue-bg:rgba(96,165,250,.08); --blue-bdr:rgba(96,165,250,.2);
+  --r:13px; --rs:9px; --rx:99px;
+  --sh:0 8px 32px rgba(0,0,0,.55); --shg:0 0 28px rgba(201,168,76,.2);
 }
 html,body{height:100%;overflow:hidden;background:var(--bg)}
-body{font-family:'DM Sans',sans-serif;color:var(--txt);font-size:14px;line-height:1.5}
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--bdr);border-radius:99px}
-::-webkit-scrollbar-thumb:hover{background:var(--gold2)}
+body{font-family:'Outfit',sans-serif;color:var(--txt);font-size:14px;line-height:1.55}
 
+/* Grain texture for depth */
+body::before{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9997;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='.04'/%3E%3C/svg%3E");
+  opacity:.5;
+}
+
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bdr3);border-radius:99px}
+::-webkit-scrollbar-thumb:hover{background:var(--gold3)}
+
+/* ────────────────────────────────────────────────
+   LAYOUT
+──────────────────────────────────────────────── */
 #shell{display:flex;height:100vh}
 
-/* ── Sidebar ── */
-#sidebar{width:230px;min-width:230px;background:var(--surf);border-right:1px solid var(--bdr);display:flex;flex-direction:column}
-
-/* UPDATED: LOGO ONLY STYLE */
-.slogo {
-  padding: 35px 20px;
-  border-bottom: 1px solid var(--bdr);
-  display: flex;
-  justify-content: center;
-  align-items: center;
+/* ────────────────────────────────────────────────
+   SIDEBAR  — slim, elegant
+──────────────────────────────────────────────── */
+#sidebar{
+  width:214px;min-width:214px;
+  background:var(--surf);border-right:1px solid var(--bdr);
+  display:flex;flex-direction:column;position:relative;
 }
-.slogo-img {
-  width: 90px;
-  height: 90px;
-  object-fit: contain;
-  display: block;
-  /* Adds a subtle glow to make the logo pop on dark background */
-  filter: drop-shadow(0 0 8px rgba(201, 168, 76, 0.15));
+/* Glowing vertical accent */
+#sidebar::after{
+  content:'';position:absolute;top:15%;bottom:15%;right:-1px;width:1px;
+  background:linear-gradient(to bottom,transparent,var(--goldbdr) 50%,transparent);
+  pointer-events:none;
 }
 
-.snav{flex:1;padding:12px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
-.slbl{font-size:10px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;padding:8px 10px 3px}
-.si{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:var(--rs);cursor:pointer;color:var(--txt2);font-size:13px;font-weight:500;transition:all .15s;border:1px solid transparent;user-select:none}
-.si:hover{background:var(--card);color:var(--txt)}
-.si.on{background:var(--goldg);color:var(--gold);border-color:rgba(201,168,76,.18)}
+.slogo{
+  padding:24px 18px 20px;border-bottom:1px solid var(--bdr);
+  display:flex;justify-content:center;align-items:center;
+}
+.slogo-img{
+  width:76px;height:76px;object-fit:contain;
+  filter:drop-shadow(0 0 14px rgba(201,168,76,.18));
+  transition:filter .4s;
+}
+.slogo-img:hover{filter:drop-shadow(0 0 24px rgba(201,168,76,.45))}
+
+.snav{flex:1;padding:14px 10px;display:flex;flex-direction:column;gap:2px;overflow-y:auto}
+
+.si{
+  display:flex;align-items:center;gap:10px;padding:10px 13px;
+  border-radius:var(--rs);cursor:pointer;color:var(--txt2);
+  font-size:13px;font-weight:500;transition:all .18s;
+  border:1px solid transparent;user-select:none;position:relative;
+}
+.si:hover{background:var(--card2);color:var(--txt);border-color:var(--bdr2)}
+.si.on{
+  background:var(--goldg);color:var(--gold);border-color:var(--goldbdr);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.03);
+}
+.si.on::before{
+  content:'';position:absolute;left:-1px;top:22%;bottom:22%;
+  width:2px;background:linear-gradient(to bottom,transparent,var(--gold),transparent);
+  border-radius:0 2px 2px 0;
+}
 .si-ic{font-size:15px;width:20px;text-align:center;flex-shrink:0}
-.si-badge{margin-left:auto;background:var(--gold);color:var(--bg);font-size:10px;font-weight:700;padding:1px 7px;border-radius:99px;min-width:20px;text-align:center}
-.sclock{padding:14px 20px;border-top:1px solid var(--bdr)}
-.sclock .tm{font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--gold);font-weight:500}
-.sclock .dt{font-size:10px;color:var(--txt3);margin-top:2px}
+.si-badge{
+  margin-left:auto;background:var(--gold);color:#06060c;
+  font-size:9px;font-weight:700;padding:2px 7px;
+  border-radius:var(--rx);min-width:20px;text-align:center;letter-spacing:.03em;
+}
 
-/* ── Main ── */
+.sclock{padding:13px 18px;border-top:1px solid var(--bdr);background:var(--bg2)}
+.sclock .tm{font-family:'JetBrains Mono',monospace;font-size:18px;color:var(--gold);font-weight:500;letter-spacing:.06em}
+.sclock .dt{font-size:9.5px;color:var(--txt3);margin-top:3px;letter-spacing:.04em}
+
+/* ────────────────────────────────────────────────
+   MAIN
+──────────────────────────────────────────────── */
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
-#topbar{display:flex;align-items:center;padding:0 24px;height:56px;border-bottom:1px solid var(--bdr);background:var(--surf);gap:12px;flex-shrink:0}
-#topbar h2{font-family:'Playfair Display',serif;font-size:17px;font-weight:600;flex:1}
-#statsbar{display:flex;gap:1px;background:var(--bdr);border-bottom:1px solid var(--bdr);flex-shrink:0}
-.st{flex:1;background:var(--surf);padding:11px 16px}
-.st .sl{font-size:10px;color:var(--txt3);text-transform:uppercase;letter-spacing:.07em}
-.st .sv{font-family:'Playfair Display',serif;font-size:19px;color:var(--gold);font-weight:700}
-.st .ss{font-size:10px;color:var(--txt3)}
 
-/* ── Pages ── */
+#topbar{
+  display:flex;align-items:center;padding:0 24px;height:56px;
+  background:linear-gradient(180deg,var(--surf) 0%,var(--bg) 100%);
+  border-bottom:1px solid var(--bdr);gap:12px;flex-shrink:0;
+}
+#topbar h2{
+  font-family:'Cormorant Garamond',serif;font-size:19px;font-weight:600;
+  flex:1;letter-spacing:.05em;color:var(--txt);
+}
+
+/* ────────────────────────────────────────────────
+   PAGES
+──────────────────────────────────────────────── */
 #content{flex:1;overflow:hidden;position:relative}
-.page{position:absolute;inset:0;overflow-y:auto;padding:20px 22px;display:none}
+.page{position:absolute;inset:0;overflow-y:auto;padding:20px 24px;display:none}
 .page.on{display:block}
 
-/* ── Cards ── */
-.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);overflow:hidden;margin-bottom:14px}
-.ch{display:flex;align-items:center;gap:9px;padding:11px 16px;background:var(--card2);border-bottom:1px solid var(--bdr)}
-.ch h3{font-size:11px;font-weight:700;color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
-.cb{padding:16px}
+/* ────────────────────────────────────────────────
+   CARDS
+──────────────────────────────────────────────── */
+.card{
+  background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  overflow:hidden;margin-bottom:14px;
+  box-shadow:0 2px 16px rgba(0,0,0,.35);
+  transition:border-color .2s;
+}
+.card:hover{border-color:var(--bdr2)}
+.ch{
+  display:flex;align-items:center;gap:10px;padding:11px 17px;
+  background:linear-gradient(90deg,var(--card2) 0%,var(--card) 100%);
+  border-bottom:1px solid var(--bdr);
+}
+.ch-ic{
+  width:27px;height:27px;border-radius:8px;
+  background:var(--goldg);border:1px solid var(--goldbdr);
+  display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;
+}
+.ch h3{font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.14em;text-transform:uppercase}
+.ch-rule{flex:1;height:1px;background:linear-gradient(90deg,var(--bdr2),transparent)}
+.cb{padding:17px}
 
-/* ── Grid ── */
+/* ────────────────────────────────────────────────
+   GRIDS
+──────────────────────────────────────────────── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:13px}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:13px}
 .g4{display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:13px}
-.g5{display:grid;grid-template-columns:1fr 1fr 1fr 1fr 1fr;gap:13px}
 .span2{grid-column:1/-1}
 
-/* ── Fields ── */
-.f{display:flex;flex-direction:column;gap:5px}
-.f label{font-size:10px;color:var(--txt2);font-weight:600;letter-spacing:.05em;text-transform:uppercase}
-input[type=text],input[type=number],input[type=date],select,textarea{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rs);color:var(--txt);font-family:'DM Sans',sans-serif;font-size:13.5px;padding:9px 12px;outline:none;transition:border-color .2s,box-shadow .2s;width:100%;-webkit-appearance:none}
-input:focus,select:focus{border-color:var(--gold2);box-shadow:0 0 0 3px rgba(201,168,76,.08)}
+/* ────────────────────────────────────────────────
+   FORM FIELDS
+──────────────────────────────────────────────── */
+.f{display:flex;flex-direction:column;gap:6px}
+.f label{font-size:9.5px;color:var(--txt2);font-weight:600;letter-spacing:.08em;text-transform:uppercase}
+
+input[type=text],input[type=number],input[type=date],select,textarea{
+  background:var(--card2);border:1px solid var(--bdr2);border-radius:var(--rs);
+  color:var(--txt);font-family:'Outfit',sans-serif;font-size:13.5px;
+  padding:10px 13px;outline:none;width:100%;-webkit-appearance:none;
+  transition:border-color .18s,box-shadow .18s,background .18s;
+}
+input:hover,select:hover{border-color:var(--bdr3);background:var(--card3)}
+input:focus,select:focus{
+  border-color:var(--gold2);background:var(--card3);
+  box-shadow:0 0 0 3px rgba(201,168,76,.06);
+}
 select option{background:var(--card2)}
-input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6) sepia(1) saturate(3) hue-rotate(5deg);cursor:pointer}
 
-/* ── Payment breakdown ── */
-.pay-summary{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rs);padding:10px 12px;display:flex;flex-direction:column;gap:4px}
-.pay-row{display:flex;justify-content:space-between;font-size:12px;color:var(--txt2)}
-.pay-row.total{border-top:1px solid var(--bdr);padding-top:5px;margin-top:2px;font-weight:600;color:var(--txt);font-size:13px}
-.pay-row.balance{color:var(--gold);font-family:'Playfair Display',serif;font-size:15px;font-weight:700}
+/* Date picker opens native calendar on click — gold icon */
+input[type=date]{cursor:pointer}
+input[type=date]::-webkit-calendar-picker-indicator{
+  filter:invert(.45) sepia(1) saturate(5) hue-rotate(1deg);
+  cursor:pointer;opacity:.65;transition:opacity .15s;
+}
+input[type=date]::-webkit-calendar-picker-indicator:hover{opacity:1}
 
-/* ── Checkboxes ── */
+/* ────────────────────────────────────────────────
+   COLOUR PICKER
+──────────────────────────────────────────────── */
+.colour-row{
+  display:flex;align-items:center;gap:8px;flex-wrap:wrap;
+  padding:10px 12px;background:var(--card2);
+  border:1px solid var(--bdr2);border-radius:var(--rs);
+}
+.cswatch{
+  width:26px;height:26px;border-radius:7px;
+  border:2px solid transparent;cursor:pointer;
+  transition:transform .15s,border-color .15s;flex-shrink:0;
+}
+.cswatch:hover{transform:scale(1.18)}
+.cswatch.on{border-color:#fff;transform:scale(1.12);box-shadow:0 0 8px rgba(255,255,255,.3)}
+.custom-swatch{
+  width:26px;height:26px;border-radius:7px;
+  background:conic-gradient(red,yellow,lime,cyan,blue,magenta,red);
+  cursor:pointer;border:2px solid transparent;
+  transition:transform .15s,border-color .15s;flex-shrink:0;
+  position:relative;overflow:hidden;
+}
+.custom-swatch:hover{transform:scale(1.18)}
+.custom-swatch.on{border-color:#fff;transform:scale(1.12)}
+.custom-swatch input[type=color]{
+  position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%;border:none;padding:0;
+}
+
+/* ────────────────────────────────────────────────
+   DYNAMIC ADVANCES
+──────────────────────────────────────────────── */
+.adv-list{display:flex;flex-direction:column;gap:7px;margin-bottom:10px}
+.adv-row{display:flex;align-items:center;gap:9px}
+.adv-lbl{font-size:9.5px;color:var(--txt3);min-width:48px;font-family:'JetBrains Mono',monospace;letter-spacing:.04em}
+.adv-row input{flex:1}
+.adv-rm{
+  background:transparent;border:1px solid var(--red-bdr);color:var(--red);
+  border-radius:7px;width:30px;height:30px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:13px;
+  flex-shrink:0;transition:all .15s;
+}
+.adv-rm:hover{background:var(--red-bg);border-color:var(--red)}
+.adv-add{
+  display:inline-flex;align-items:center;gap:8px;padding:8px 16px;
+  background:var(--goldg2);border:1px dashed var(--goldbdr);border-radius:var(--rs);
+  color:var(--gold);font-size:12px;font-weight:600;cursor:pointer;
+  transition:all .18s;user-select:none;letter-spacing:.04em;
+}
+.adv-add:hover{background:var(--goldg);border-style:solid}
+
+/* ────────────────────────────────────────────────
+   PAYMENT SUMMARY
+──────────────────────────────────────────────── */
+.pay-summary{
+  background:linear-gradient(135deg,var(--card2),var(--bg2));
+  border:1px solid var(--bdr2);border-radius:var(--rs);
+  padding:14px 15px;margin-top:13px;display:flex;flex-direction:column;gap:5px;
+}
+.prow{display:flex;justify-content:space-between;font-size:12.5px;color:var(--txt2)}
+.prow.sub{
+  padding-left:14px;font-size:11px;color:var(--txt3);
+  border-left:2px solid var(--bdr3);margin-left:6px;
+}
+.prow.tot{border-top:1px solid var(--bdr2);padding-top:7px;margin-top:3px;font-weight:600;color:var(--txt);font-size:13px}
+.prow.bal{color:var(--gold);font-family:'Cormorant Garamond',serif;font-size:18px;font-weight:600}
+
+/* ────────────────────────────────────────────────
+   CHECKBOXES — green when ticked
+──────────────────────────────────────────────── */
 .ck-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
-.ck{display:flex;align-items:center;gap:9px;padding:9px 12px;background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rs);cursor:pointer;transition:all .15s;user-select:none}
-.ck:hover{border-color:var(--gold2)}
-.ck.on{border-color:var(--gold);background:var(--goldg)}
+.ck{
+  display:flex;align-items:center;gap:10px;padding:10px 12px;
+  background:var(--card2);border:1px solid var(--bdr2);border-radius:var(--rs);
+  cursor:pointer;transition:all .18s;user-select:none;
+}
+.ck:hover{border-color:var(--bdr3);background:var(--card3)}
+.ck.on{border-color:var(--grn-bdr);background:var(--grn-bg)}
 .ck input{display:none}
-.ck-box{width:17px;height:17px;border:1.5px solid var(--bdr);border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;transition:all .15s}
-.ck.on .ck-box{background:var(--gold);border-color:var(--gold);color:var(--bg)}
-.ck span{font-size:13px;color:var(--txt2)}
-.ck.on span{color:var(--txt)}
+.ck-box{
+  width:18px;height:18px;border:1.5px solid var(--bdr3);border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;font-size:10px;transition:all .18s;
+}
+.ck.on .ck-box{background:var(--grn);border-color:var(--grn);color:#06060c;box-shadow:0 0 10px rgba(52,211,153,.3)}
+.ck span{font-size:13px;color:var(--txt2);transition:color .15s}
+.ck.on span{color:var(--grn)}
 
-/* ── Radio pills ── */
-.rpills{display:flex;gap:7px;flex-wrap:wrap}
-.rpill{padding:7px 17px;background:var(--card2);border:1px solid var(--bdr);border-radius:99px;cursor:pointer;font-size:13px;color:var(--txt2);transition:all .15s;user-select:none}
-.rpill:hover{border-color:var(--gold2);color:var(--txt)}
-.rpill.on{background:var(--gold);border-color:var(--gold);color:var(--bg);font-weight:600}
+/* ────────────────────────────────────────────────
+   TIER PILLS
+──────────────────────────────────────────────── */
+.rpills{display:flex;gap:8px;flex-wrap:wrap}
+.rpill{
+  padding:8px 20px;background:var(--card2);border:1px solid var(--bdr2);border-radius:var(--rx);
+  cursor:pointer;font-size:13px;color:var(--txt2);transition:all .18s;user-select:none;letter-spacing:.04em;
+}
+.rpill:hover{border-color:var(--bdr3);color:var(--txt);background:var(--card3)}
+.rpill.on{background:var(--gold);border-color:var(--gold);color:#06060c;font-weight:600;box-shadow:0 4px 16px rgba(201,168,76,.3)}
 
-/* ── Buttons ── */
-.btn{display:inline-flex;align-items:center;gap:7px;padding:9px 17px;border-radius:var(--rs);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;cursor:pointer;border:none;transition:all .18s;white-space:nowrap;user-select:none}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-.btn-gold{background:var(--gold);color:var(--bg)}
-.btn-gold:hover:not(:disabled){background:var(--goldl);box-shadow:var(--shg);transform:translateY(-1px)}
-.btn-out{background:transparent;color:var(--txt2);border:1px solid var(--bdr)}
-.btn-out:hover:not(:disabled){border-color:var(--txt2);color:var(--txt)}
-.btn-del{background:transparent;color:var(--red);border:1px solid rgba(231,76,60,.25)}
-.btn-del:hover:not(:disabled){background:rgba(231,76,60,.08)}
-.btn-sm{padding:5px 11px;font-size:11.5px}
-.brow{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding-top:4px}
+/* ────────────────────────────────────────────────
+   BUTTONS
+──────────────────────────────────────────────── */
+.btn{
+  display:inline-flex;align-items:center;gap:7px;padding:10px 20px;
+  border-radius:var(--rs);font-family:'Outfit',sans-serif;font-size:13px;
+  font-weight:600;cursor:pointer;border:none;transition:all .2s;
+  white-space:nowrap;user-select:none;letter-spacing:.03em;
+}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-gold{
+  background:linear-gradient(135deg,var(--gold) 0%,var(--goldl) 100%);
+  color:#06060c;box-shadow:0 4px 16px rgba(201,168,76,.18);
+}
+.btn-gold:hover:not(:disabled){background:linear-gradient(135deg,var(--goldl),var(--goldd));box-shadow:var(--shg);transform:translateY(-1px)}
+.btn-out{background:transparent;color:var(--txt2);border:1px solid var(--bdr2)}
+.btn-out:hover:not(:disabled){border-color:var(--bdr3);color:var(--txt);background:var(--card2)}
+.btn-del{background:transparent;color:var(--red);border:1px solid var(--red-bdr)}
+.btn-del:hover:not(:disabled){background:var(--red-bg);border-color:var(--red)}
+.btn-blue{background:var(--blue-bg);color:var(--blue);border:1px solid var(--blue-bdr)}
+.btn-blue:hover:not(:disabled){background:rgba(96,165,250,.14)}
+.btn-sm{padding:6px 12px;font-size:11.5px;border-radius:7px}
+.brow{display:flex;gap:9px;align-items:center;flex-wrap:wrap;padding-top:6px}
 
-/* ── Search & filter ── */
-.sbar{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:9px 14px;margin-bottom:12px}
+/* ────────────────────────────────────────────────
+   SEARCH + FILTERS
+──────────────────────────────────────────────── */
+.sbar{
+  display:flex;align-items:center;gap:11px;
+  background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  padding:10px 15px;margin-bottom:14px;transition:border-color .18s;
+}
+.sbar:focus-within{border-color:var(--bdr3)}
 .sbar input{flex:1;background:transparent;border:none;font-size:14px;color:var(--txt)}
-.sbar input:focus{box-shadow:none;border:none}
-.sbar-ic{color:var(--txt3);font-size:16px}
-.frow{display:flex;gap:7px;margin-bottom:12px;flex-wrap:wrap}
-.fchip{padding:5px 13px;border-radius:99px;font-size:11.5px;cursor:pointer;border:1px solid var(--bdr);color:var(--txt2);background:var(--card);transition:all .15s;user-select:none}
-.fchip:hover{border-color:var(--gold2)}
-.fchip.on{background:var(--goldg);border-color:var(--gold);color:var(--gold)}
+.sbar input:focus{outline:none;box-shadow:none;border:none;background:transparent}
+.sbar-ic{color:var(--txt3);font-size:15px}
+.frow{display:flex;gap:7px;margin-bottom:14px;flex-wrap:wrap;align-items:center}
+.fchip{
+  padding:6px 14px;border-radius:var(--rx);font-size:11.5px;cursor:pointer;
+  border:1px solid var(--bdr2);color:var(--txt2);background:var(--card);
+  transition:all .18s;user-select:none;letter-spacing:.03em;
+}
+.fchip:hover{border-color:var(--bdr3);color:var(--txt)}
+.fchip.on{background:var(--goldg);border-color:var(--goldbdr);color:var(--gold)}
+.fsep{width:1px;height:18px;background:var(--bdr2)}
+.tier-sel select{
+  background:var(--card);border:1px solid var(--bdr2);border-radius:var(--rx);
+  color:var(--txt2);font-size:11.5px;padding:5px 13px;
+  font-family:'Outfit',sans-serif;cursor:pointer;outline:none;transition:all .15s;
+}
+.tier-sel select:hover{border-color:var(--bdr3);color:var(--txt)}
 
-/* ── Booking cards ── */
-#blist{display:flex;flex-direction:column;gap:7px}
-.bcard{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);display:flex;align-items:stretch;overflow:hidden;transition:border-color .2s,transform .15s}
-.bcard:hover{border-color:var(--gold2);transform:translateY(-1px)}
-.bstrip{width:4px;flex-shrink:0}
-.bstrip.confirmed{background:var(--grn)}
-.bstrip.cancelled{background:var(--red)}
-.bstrip.completed{background:var(--gold)}
-.bbody{flex:1;padding:12px 15px;display:flex;flex-direction:column;gap:4px;min-width:0}
-.br1{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
-.bname{font-family:'Playfair Display',serif;font-size:16px;font-weight:600}
-.bid-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--txt3);padding:2px 7px;border:1px solid var(--bdr);border-radius:99px}
-.bstat{margin-left:auto;font-size:10px;font-weight:700;letter-spacing:.06em;padding:3px 9px;border-radius:99px;text-transform:uppercase}
-.bstat.confirmed{background:rgba(46,204,113,.1);color:var(--grn);border:1px solid rgba(46,204,113,.2)}
-.bstat.cancelled{background:rgba(231,76,60,.1);color:var(--red);border:1px solid rgba(231,76,60,.2)}
-.bstat.completed{background:rgba(201,168,76,.1);color:var(--gold);border:1px solid rgba(201,168,76,.2)}
-.br2{display:flex;align-items:center;gap:12px;font-size:12px;color:var(--txt2);flex-wrap:wrap}
-.bdates{color:var(--gold);font-family:'JetBrains Mono',monospace;font-size:11px}
-.br3{font-size:11.5px;color:var(--txt3)}
-.bacts{display:flex;flex-direction:column;justify-content:center;gap:3px;padding:10px;border-left:1px solid var(--bdr);background:var(--card2);flex-shrink:0}
+/* ────────────────────────────────────────────────
+   BOOKING CARDS — compact, text-fitting
+──────────────────────────────────────────────── */
+#blist{display:flex;flex-direction:column;gap:5px}
+.bcard{
+  background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);
+  display:flex;align-items:stretch;overflow:hidden;transition:all .2s;
+}
+.bcard:hover{border-color:var(--bdr3);transform:translateY(-1px);box-shadow:0 4px 20px rgba(0,0,0,.4)}
+.bstrip{width:3px;flex-shrink:0}
 
-/* ── Conflict banner ── */
-#conflict{display:none;background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.25);border-radius:var(--rs);padding:12px 16px;margin-bottom:14px;color:#ff8a80;font-size:13px;line-height:1.7}
+.bbody{
+  flex:1;padding:9px 13px;
+  display:flex;flex-direction:column;justify-content:center;gap:4px;
+  min-width:0;
+}
+/* Row 1: name + id + status */
+.br1{display:flex;align-items:center;gap:7px;min-width:0;flex-wrap:nowrap}
+.bname{
+  font-family:'Cormorant Garamond',serif;font-size:15px;font-weight:600;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex-shrink:1;min-width:0;
+}
+.bid-tag{
+  font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--txt3);
+  padding:2px 6px;border:1px solid var(--bdr2);border-radius:var(--rx);flex-shrink:0;
+}
+.bstat{
+  flex-shrink:0;font-size:9px;font-weight:700;letter-spacing:.07em;
+  padding:2px 9px;border-radius:var(--rx);text-transform:uppercase;
+}
+.bstat.processing{background:var(--amb-bg);color:var(--amb);border:1px solid var(--amb-bdr)}
+.bstat.completed{background:var(--goldg);color:var(--gold);border:1px solid var(--goldbdr)}
+.bstat.cancelled{background:var(--red-bg);color:var(--red);border:1px solid var(--red-bdr)}
+
+/* Row 2: compact meta — all on one line, truncates gracefully */
+.bmeta{
+  display:flex;align-items:center;flex-wrap:nowrap;overflow:hidden;
+  gap:0;font-size:11px;color:var(--txt3);white-space:nowrap;
+}
+.bm{display:inline-flex;align-items:center;gap:3px;flex-shrink:0}
+.bm+.bm::before{content:'·';margin:0 5px;color:var(--txt3);opacity:.5}
+.bm-dates{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--gold)}
+.bm-tier{color:var(--gold);font-weight:500}
+.bm-bal-due{color:var(--amb);font-weight:600}
+.bm-bal-clear{color:var(--grn);font-weight:600}
+.bm-venue{overflow:hidden;text-overflow:ellipsis;max-width:140px}
+
+.bacts{
+  display:flex;flex-direction:column;justify-content:center;gap:3px;
+  padding:8px 9px;border-left:1px solid var(--bdr);background:var(--card2);flex-shrink:0;
+}
+
+/* ────────────────────────────────────────────────
+   CALENDAR
+──────────────────────────────────────────────── */
+#page-calendar{padding:0!important}
+.cal-shell{display:flex;height:100%;overflow:hidden}
+.cal-left{
+  width:240px;min-width:240px;border-right:1px solid var(--bdr);
+  display:flex;flex-direction:column;overflow-y:auto;background:var(--surf);
+}
+.cal-main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.cal-topbar{
+  display:flex;align-items:center;gap:12px;padding:13px 18px;
+  border-bottom:1px solid var(--bdr);background:var(--surf);flex-shrink:0;
+}
+.cal-topbar h3{font-family:'Cormorant Garamond',serif;font-size:19px;color:var(--txt);flex:1;letter-spacing:.04em}
+.cal-nav{display:flex;gap:5px}
+.cal-nav button{
+  background:var(--card2);border:1px solid var(--bdr2);color:var(--txt2);
+  border-radius:var(--rs);padding:7px 12px;cursor:pointer;font-size:13px;
+  font-family:'Outfit',sans-serif;transition:all .15s;
+}
+.cal-nav button:hover{border-color:var(--gold);color:var(--gold)}
+.cal-today{background:var(--goldg)!important;border-color:var(--goldbdr)!important;color:var(--gold)!important}
+.cal-grid-wrap{flex:1;overflow-y:auto;padding:14px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px}
+.cal-dow{text-align:center;font-size:9px;font-weight:700;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;padding:7px 0}
+.cal-day{
+  min-height:78px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--rs);
+  padding:6px;transition:all .15s;overflow:hidden;
+}
+.cal-day:hover{border-color:var(--bdr3);background:var(--card2)}
+.cal-day.today{border-color:var(--gold);background:var(--goldg2)}
+.cal-day.other-month{opacity:.25}
+.cal-day-num{font-size:11px;font-weight:600;color:var(--txt3);margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.cal-day.today .cal-day-num{color:var(--gold)}
+.cal-pill{
+  font-size:9.5px;padding:2px 6px;border-radius:4px;margin-bottom:2px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;
+  font-weight:500;transition:opacity .15s;border-left:2px solid transparent;
+}
+.cal-pill:hover{opacity:.75}
+/* Mini cal */
+.mini-cal{padding:15px}
+.mini-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.mini-nav button{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:5px;transition:all .15s}
+.mini-nav button:hover{color:var(--gold);background:var(--goldg)}
+.mini-title{font-size:10.5px;font-weight:600;color:var(--gold);letter-spacing:.06em}
+.mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:1px}
+.mini-dow{text-align:center;font-size:8px;color:var(--txt3);padding:3px 0}
+.mini-day{text-align:center;font-size:10.5px;padding:4px 1px;border-radius:5px;cursor:pointer;color:var(--txt3);transition:all .12s}
+.mini-day:hover{background:var(--card2);color:var(--txt)}
+.mini-day.today{background:var(--gold);color:#06060c;font-weight:700}
+.mini-day.has-event{color:var(--gold);font-weight:600}
+.mini-day.other{opacity:.22}
+/* Upcoming */
+.upcoming{padding:0 13px 13px}
+.upcoming-title{font-size:9px;color:var(--txt3);letter-spacing:.12em;text-transform:uppercase;margin-bottom:9px;font-weight:600}
+.upcoming-item{
+  padding:8px 10px;background:var(--card);border:1px solid var(--bdr);
+  border-radius:var(--rs);margin-bottom:5px;cursor:pointer;transition:all .15s;
+  border-left:3px solid transparent;
+}
+.upcoming-item:hover{border-color:var(--bdr2)}
+.ui-name{font-size:12px;font-weight:600;color:var(--txt)}
+.ui-date{font-size:10px;font-family:'JetBrains Mono',monospace;margin-top:1px}
+.ui-type{font-size:10px;color:var(--txt3);margin-top:1px}
+/* Popup */
+.cal-popup{
+  position:fixed;z-index:500;background:var(--card);border:1px solid var(--bdr3);
+  border-radius:var(--r);padding:17px;min-width:240px;max-width:290px;
+  box-shadow:0 16px 50px rgba(0,0,0,.7);display:none;
+}
+.cal-popup.open{display:block;animation:popIn .15s ease}
+@keyframes popIn{from{opacity:0;transform:scale(.95) translateY(-4px)}to{opacity:1;transform:none}}
+.cal-popup h4{font-family:'Cormorant Garamond',serif;font-size:15px;margin-bottom:9px;padding-right:18px}
+.cprow{display:flex;gap:8px;font-size:11.5px;color:var(--txt2);margin-bottom:4px}
+.cprow span:first-child{color:var(--txt3);min-width:50px;font-size:10.5px}
+.popup-close{position:absolute;top:11px;right:13px;background:none;border:none;color:var(--txt3);cursor:pointer;font-size:15px;transition:color .15s}
+.popup-close:hover{color:var(--txt)}
+
+/* ────────────────────────────────────────────────
+   BANNERS
+──────────────────────────────────────────────── */
+#conflict{
+  display:none;background:rgba(248,113,113,.06);border:1px solid var(--red-bdr);
+  border-left:3px solid var(--red);border-radius:var(--rs);padding:12px 16px;
+  margin-bottom:15px;color:#fca5a5;font-size:13px;line-height:1.7;
+}
 #conflict.show{display:block}
-#editbar{display:none;padding:9px 15px;background:var(--goldg);border:1px solid rgba(201,168,76,.25);border-radius:var(--rs);margin-bottom:14px;font-size:13px;color:var(--gold)}
+#editbar{
+  display:none;padding:10px 15px;background:linear-gradient(90deg,var(--goldg),transparent);
+  border:1px solid var(--goldbdr);border-left:3px solid var(--gold);
+  border-radius:var(--rs);margin-bottom:15px;font-size:13px;color:var(--gold);
+}
 
-/* ── Modal ── */
-#ov{position:fixed;inset:0;background:rgba(0,0,0,.72);backdrop-filter:blur(4px);z-index:100;display:none;align-items:center;justify-content:center}
+/* ────────────────────────────────────────────────
+   MODAL
+──────────────────────────────────────────────── */
+#ov{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:400;display:none;align-items:center;justify-content:center}
 #ov.open{display:flex}
-#modal{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r);padding:26px;max-width:440px;width:90%;box-shadow:0 20px 60px rgba(0,0,0,.6)}
-#modal h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:10px}
-#modal p{color:var(--txt2);font-size:13px;line-height:1.7;white-space:pre-wrap}
-.mbr{display:flex;gap:9px;margin-top:18px;justify-content:flex-end}
+#modal{
+  background:var(--card);border:1px solid var(--bdr3);border-radius:var(--r);
+  padding:27px;max-width:430px;width:90%;box-shadow:0 24px 80px rgba(0,0,0,.8);
+  animation:mIn .2s ease;
+}
+@keyframes mIn{from{opacity:0;transform:translateY(10px) scale(.97)}to{opacity:1;transform:none}}
+#modal h3{font-family:'Cormorant Garamond',serif;font-size:19px;margin-bottom:11px}
+#modal p{color:var(--txt2);font-size:13px;line-height:1.75;white-space:pre-wrap}
+.mbr{display:flex;gap:9px;margin-top:20px;justify-content:flex-end}
 
-/* ── Toast ── */
+/* ────────────────────────────────────────────────
+   TOASTS
+──────────────────────────────────────────────── */
 #toasts{position:fixed;bottom:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:7px}
-.toast{background:var(--card2);border:1px solid var(--bdr);border-radius:var(--rs);padding:11px 16px;font-size:13px;box-shadow:var(--sh);animation:tsIn .22s ease;max-width:340px;display:flex;align-items:center;gap:9px}
+.toast{
+  background:var(--card2);border:1px solid var(--bdr2);border-radius:var(--rs);
+  padding:11px 16px;font-size:13px;box-shadow:var(--sh);
+  animation:tsIn .22s ease;max-width:340px;display:flex;align-items:center;gap:9px;
+}
 .toast.ok{border-left:3px solid var(--grn)}
 .toast.err{border-left:3px solid var(--red)}
 .toast.info{border-left:3px solid var(--gold)}
-@keyframes tsIn{from{transform:translateX(80px);opacity:0}to{transform:none;opacity:1}}
+@keyframes tsIn{from{transform:translateX(90px);opacity:0}to{transform:none;opacity:1}}
 
-/* ── Loader ── */
-#loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;gap:14px}
-#loader h2{font-family:'Playfair Display',serif;font-size:22px;color:var(--gold)}
-#loader p{color:var(--txt3);font-size:12px}
-.spin{width:38px;height:38px;border:3px solid var(--bdr);border-top-color:var(--gold);border-radius:50%;animation:sp .8s linear infinite}
+/* ────────────────────────────────────────────────
+   LOADER
+──────────────────────────────────────────────── */
+#loader{
+  position:fixed;inset:0;background:var(--bg);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  z-index:9999;gap:16px;
+}
+#loader::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,var(--gold),transparent);
+  animation:shine 2.5s ease infinite;
+}
+@keyframes shine{0%,100%{opacity:0}50%{opacity:1}}
+#loader h2{font-family:'Cormorant Garamond',serif;font-size:24px;color:var(--gold);font-weight:400;letter-spacing:.1em}
+#loader p{color:var(--txt3);font-size:11.5px;letter-spacing:.06em}
+.spin{width:36px;height:36px;border:2px solid var(--bdr2);border-top-color:var(--gold);border-radius:50%;animation:sp .85s linear infinite}
 @keyframes sp{to{transform:rotate(360deg)}}
+
 .empty{text-align:center;padding:56px 20px;color:var(--txt3)}
-.empty-ic{font-size:44px;margin-bottom:14px}
+.empty-ic{font-size:36px;margin-bottom:14px;opacity:.4}
+.empty p{font-size:12.5px;letter-spacing:.04em}
+
+.sdiv{display:flex;align-items:center;gap:10px;margin:6px 0 13px}
+.sdiv::before,.sdiv::after{content:'';flex:1;height:1px;background:var(--bdr2)}
+.sdiv span{font-size:9px;color:var(--txt3);letter-spacing:.12em;text-transform:uppercase;font-weight:500;white-space:nowrap}
 </style>
 </head>
 <body>
 
+<!-- LOADER -->
 <div id="loader">
   <div class="spin"></div>
   <h2>Shree Photography</h2>
   <p id="loader-msg">Starting up…</p>
 </div>
 
+<!-- APP -->
 <div id="shell" style="display:none">
 
+  <!-- SIDEBAR -->
   <aside id="sidebar">
     <div class="slogo">
-      <img src="assets/shree-logo.ico" alt="Logo" class="slogo-img"> 
+      <img src="assets/shree-logo.ico" alt="Shree Photography" class="slogo-img"/>
     </div>
     <nav class="snav">
-      <div class="slbl">Navigation</div>
-      <div class="si on" data-pg="bookings"><span class="si-ic">📋</span>All Bookings<span class="si-badge" id="badge">0</span></div>
-      <div class="si" data-pg="form"><span class="si-ic">✦</span>New Booking</div>
-      <div class="slbl" style="margin-top:8px">Folders</div>
-      <div class="si" id="btn-invoices"><span class="si-ic">📁</span>Open Invoices</div>
-      <div class="si" id="btn-calendars"><span class="si-ic">📁</span>Open Calendars</div>
+      <div class="si on" data-pg="bookings">
+        <span class="si-ic">📋</span>All Bookings
+        <span class="si-badge" id="badge">0</span>
+      </div>
+      <div class="si" data-pg="calendar">
+        <span class="si-ic">📅</span>Calendar
+      </div>
+      <div class="si" id="btn-invoices">
+        <span class="si-ic">📁</span>Open Invoices
+      </div>
     </nav>
     <div class="sclock">
       <div class="tm" id="clock">--:--:--</div>
@@ -216,52 +570,92 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6) sepia(1) s
     </div>
   </aside>
 
+  <!-- MAIN -->
   <div id="main">
     <div id="topbar">
       <h2 id="ptitle">All Bookings</h2>
       <button class="btn btn-gold" onclick="goNew()">＋ &nbsp;New Booking</button>
     </div>
 
-    <div id="statsbar">
-      <div class="st"><div class="sl">Total</div><div class="sv" id="s-tot">—</div></div>
-      <div class="st"><div class="sl">Confirmed</div><div class="sv" id="s-con" style="color:var(--grn)">—</div></div>
-      <div class="st"><div class="sl">Cancelled</div><div class="sv" id="s-can" style="color:var(--red)">—</div></div>
-      <div class="st"><div class="sl">Completed</div><div class="sv" id="s-com" style="color:var(--amb)">—</div></div>
-      <div class="st"><div class="sl">Total Revenue</div><div class="sv" id="s-rev">—</div><div class="ss" id="s-pend"></div></div>
-    </div>
-
     <div id="content">
 
+      <!-- ═══ BOOKINGS PAGE ═══════════════════════════ -->
       <div class="page on" id="page-bookings">
         <div class="sbar">
           <span class="sbar-ic">🔍</span>
-          <input type="text" id="search" placeholder="Search by name, event type, ID, status…" oninput="renderList()"/>
+          <input type="text" id="search" placeholder="Search name, event, venue, ID…" oninput="renderList()"/>
         </div>
         <div class="frow">
-          <div class="fchip on" data-f="all"      onclick="setF('all',this)">All</div>
-          <div class="fchip"    data-f="confirmed" onclick="setF('confirmed',this)">✅ Confirmed</div>
-          <div class="fchip"    data-f="cancelled" onclick="setF('cancelled',this)">❌ Cancelled</div>
-          <div class="fchip"    data-f="completed" onclick="setF('completed',this)">⭐ Completed</div>
+          <div class="fchip on" data-f="all"        onclick="setF('all',this)">All</div>
+          <div class="fchip"    data-f="processing"  onclick="setF('processing',this)">⏳ Processing</div>
+          <div class="fchip"    data-f="completed"   onclick="setF('completed',this)">✅ Completed</div>
+          <div class="fsep"></div>
+          <div class="tier-sel">
+            <select id="tier-filter" onchange="renderList()">
+              <option value="">All Tiers</option>
+              <option>Basic</option><option>Premium</option>
+              <option>Diamond</option><option>Gold</option>
+            </select>
+          </div>
         </div>
         <div id="blist"></div>
       </div>
 
+      <!-- ═══ CALENDAR PAGE ════════════════════════════ -->
+      <div class="page" id="page-calendar">
+        <div class="cal-shell">
+          <div class="cal-left">
+            <div class="mini-cal">
+              <div class="mini-nav">
+                <button onclick="miniPrev()">◀</button>
+                <div class="mini-title" id="mini-title"></div>
+                <button onclick="miniNext()">▶</button>
+              </div>
+              <div class="mini-grid" id="mini-grid"></div>
+            </div>
+            <div class="upcoming">
+              <div class="upcoming-title">Upcoming Events</div>
+              <div id="upcoming-list"></div>
+            </div>
+          </div>
+          <div class="cal-main">
+            <div class="cal-topbar">
+              <div class="cal-nav">
+                <button onclick="calPrev()">◀</button>
+                <button class="cal-today" onclick="calToday()">Today</button>
+                <button onclick="calNext()">▶</button>
+              </div>
+              <h3 id="cal-title"></h3>
+              <button class="btn btn-blue btn-sm" onclick="syncAllToApple()">🍎 Sync All</button>
+            </div>
+            <div class="cal-grid-wrap">
+              <div class="cal-grid" id="cal-grid"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ═══ FORM PAGE ════════════════════════════════ -->
       <div class="page" id="page-form">
-        <div style="max-width:900px;padding-bottom:40px">
-
+        <div style="max-width:870px;padding-bottom:40px">
           <div id="conflict"></div>
-          <div id="editbar">✏️ Editing booking <strong id="eid"></strong></div>
+          <div id="editbar">✏️ &nbsp;Editing booking &nbsp;<strong id="eid"></strong></div>
 
+          <!-- Client Details -->
           <div class="card">
-            <div class="ch"><span>👤</span><h3>Client Details</h3></div>
+            <div class="ch"><div class="ch-ic">👤</div><h3>Client Details</h3><div class="ch-rule"></div></div>
             <div class="cb">
               <div class="g2">
                 <div class="f"><label>Client Name *</label><input type="text" id="f-name" placeholder="Full name"/></div>
                 <div class="f"><label>Contact Number *</label><input type="text" id="f-phone" placeholder="+91 98765 43210"/></div>
                 <div class="f"><label>Event Type *</label>
                   <select id="f-etype">
-                    <option>Wedding</option><option>Engagement</option><option>Reception</option>
-                    <option>Baby Shower</option><option>Birthday</option><option>Corporate</option><option>Other</option>
+                    <option>Wedding</option>
+                    <option>Engagement</option>
+                    <option>Reception</option>
+                    <option>Baby Shower</option>
+                    <option>Birthday</option>
+                    <option>Wedding &amp; Engagement</option>
                   </select>
                 </div>
                 <div class="f"><label>Event Time</label><input type="text" id="f-time" placeholder="e.g. 10:00 AM"/></div>
@@ -270,18 +664,21 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6) sepia(1) s
             </div>
           </div>
 
+          <!-- Event Dates -->
           <div class="card">
-            <div class="ch"><span>📅</span><h3>Event Dates</h3></div>
+            <div class="ch"><div class="ch-ic">📅</div><h3>Event Dates</h3><div class="ch-rule"></div></div>
             <div class="cb">
               <div class="g2">
+                <!-- Clicking input opens native date picker calendar -->
                 <div class="f"><label>Start Date *</label><input type="date" id="f-start" onchange="checkConflict()"/></div>
                 <div class="f"><label>End Date *</label><input type="date" id="f-end" onchange="checkConflict()"/></div>
               </div>
             </div>
           </div>
 
+          <!-- Services -->
           <div class="card">
-            <div class="ch"><span>📦</span><h3>Services / Packages</h3></div>
+            <div class="ch"><div class="ch-ic">📦</div><h3>Services / Packages</h3><div class="ch-rule"></div></div>
             <div class="cb">
               <div class="ck-grid" id="pkgs">
                 <label class="ck" data-k="traditional_photo"><input type="checkbox"/><div class="ck-box">✓</div><span>Traditional Photo</span></label>
@@ -296,8 +693,9 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6) sepia(1) s
             </div>
           </div>
 
+          <!-- Package Tier -->
           <div class="card">
-            <div class="ch"><span>🏷</span><h3>Package Tier</h3></div>
+            <div class="ch"><div class="ch-ic">🏷</div><h3>Package Tier</h3><div class="ch-rule"></div></div>
             <div class="cb">
               <div class="rpills" id="tiers">
                 <div class="rpill on" data-t="Basic">Basic</div>
@@ -308,45 +706,60 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6) sepia(1) s
             </div>
           </div>
 
+          <!-- Event Colour -->
           <div class="card">
-            <div class="ch"><span>💰</span><h3>Fees & Payment</h3></div>
+            <div class="ch"><div class="ch-ic">🎨</div><h3>Event Colour</h3><div class="ch-rule"></div></div>
             <div class="cb">
-              <div class="g3" style="margin-bottom:14px">
-                <div class="f">
-                  <label>Package Amount (Rs.) *</label>
-                  <input type="number" id="f-amt" placeholder="0" oninput="calcBal()"/>
-                </div>
-                <div class="f">
-                  <label>Advance 1 (Rs.)</label>
-                  <input type="number" id="f-adv1" placeholder="0" oninput="calcBal()"/>
-                </div>
-                <div class="f">
-                  <label>Advance 2 (Rs.)</label>
-                  <input type="number" id="f-adv2" placeholder="0" oninput="calcBal()"/>
+              <div style="font-size:11px;color:var(--txt3);margin-bottom:10px">Pick a colour to identify this booking on the calendar</div>
+              <div class="colour-row" id="colour-row">
+                <div class="cswatch on" data-c="#c9a84c" style="background:#c9a84c" onclick="pickColour(this,'#c9a84c')"></div>
+                <div class="cswatch" data-c="#34d399" style="background:#34d399" onclick="pickColour(this,'#34d399')"></div>
+                <div class="cswatch" data-c="#60a5fa" style="background:#60a5fa" onclick="pickColour(this,'#60a5fa')"></div>
+                <div class="cswatch" data-c="#f87171" style="background:#f87171" onclick="pickColour(this,'#f87171')"></div>
+                <div class="cswatch" data-c="#a78bfa" style="background:#a78bfa" onclick="pickColour(this,'#a78bfa')"></div>
+                <div class="cswatch" data-c="#fb923c" style="background:#fb923c" onclick="pickColour(this,'#fb923c')"></div>
+                <div class="cswatch" data-c="#e879f9" style="background:#e879f9" onclick="pickColour(this,'#e879f9')"></div>
+                <div class="cswatch" data-c="#2dd4bf" style="background:#2dd4bf" onclick="pickColour(this,'#2dd4bf')"></div>
+                <div class="cswatch" data-c="#facc15" style="background:#facc15" onclick="pickColour(this,'#facc15')"></div>
+                <div class="cswatch" data-c="#94a3b8" style="background:#94a3b8" onclick="pickColour(this,'#94a3b8')"></div>
+                <div class="custom-swatch" id="custom-swatch" title="Custom colour">
+                  <input type="color" id="custom-colour" value="#c9a84c"
+                    oninput="pickColourCustom(this.value)"
+                    onchange="pickColourCustom(this.value)"/>
                 </div>
               </div>
+              <input type="hidden" id="f-colour" value="#c9a84c"/>
+            </div>
+          </div>
 
-              <div class="pay-summary" id="pay-summary">
-                <div class="pay-row"><span>Package Amount</span><span id="ps-amt">Rs. 0.00</span></div>
-                <div class="pay-row"><span>Advance 1</span><span id="ps-adv1">Rs. 0.00</span></div>
-                <div class="pay-row"><span>Advance 2</span><span id="ps-adv2">Rs. 0.00</span></div>
-                <div class="pay-row total"><span>Total Advance Paid</span><span id="ps-total-adv">Rs. 0.00</span></div>
-                <div class="pay-row balance"><span>Balance Due</span><span id="ps-bal">Rs. 0.00</span></div>
-              </div>
-
-              <div style="margin-top:14px" class="g2">
-                <div class="f">
-                  <label>Payment Status *</label>
+          <!-- Fees & Payment -->
+          <div class="card">
+            <div class="ch"><div class="ch-ic">💰</div><h3>Fees & Payment</h3><div class="ch-rule"></div></div>
+            <div class="cb">
+              <div class="g2" style="margin-bottom:15px">
+                <div class="f"><label>Package Amount (Rs.) *</label><input type="number" id="f-amt" placeholder="0" oninput="calcBal()"/></div>
+                <div class="f"><label>Payment Status *</label>
                   <select id="f-status">
-                    <option>Confirmed</option><option>Cancelled</option><option>Completed</option>
+                    <option>Confirmed</option><option>Processing</option>
+                    <option>Cancelled</option><option>Completed</option>
                   </select>
                 </div>
+              </div>
+              <div class="sdiv"><span>Advances Received</span></div>
+              <div class="adv-list" id="adv-list"></div>
+              <div class="adv-add" onclick="addAdvance()">＋ &nbsp;Add Advance Payment</div>
+              <div class="pay-summary">
+                <div class="prow"><span>Package Amount</span><span id="ps-amt">Rs. 0.00</span></div>
+                <div id="ps-adv-rows"></div>
+                <div class="prow tot"><span>Total Advance Paid</span><span id="ps-total">Rs. 0.00</span></div>
+                <div class="prow bal"><span>Balance Due</span><span id="ps-bal">Rs. 0.00</span></div>
               </div>
             </div>
           </div>
 
+          <!-- Add-ons -->
           <div class="card">
-            <div class="ch"><span>➕</span><h3>Add-ons & Extras</h3></div>
+            <div class="ch"><div class="ch-ic">➕</div><h3>Add-ons & Extras</h3><div class="ch-rule"></div></div>
             <div class="cb">
               <div class="g4">
                 <div class="f"><label>Album Type</label><input type="text" id="f-atype" placeholder="Flush, Coffee…"/></div>
@@ -363,309 +776,557 @@ input[type=date]::-webkit-calendar-picker-indicator{filter:invert(.6) sepia(1) s
 
           <div class="brow">
             <button class="btn btn-gold" id="save-btn" onclick="saveBooking()">💾 &nbsp;Save Booking</button>
-            <button class="btn btn-out" onclick="goNew()">🗑 &nbsp;Clear Form</button>
+            <button class="btn btn-out" onclick="goNew()">🗑 &nbsp;Clear</button>
             <div id="edit-btns" style="display:none;display:flex;gap:8px;flex-wrap:wrap">
-              <button class="btn btn-out" onclick="regenPDF()">📄 &nbsp;Re-generate Invoice</button>
-              <button class="btn btn-out" onclick="exportICS()">📅 &nbsp;Export Calendar (.ics)</button>
+              <button class="btn btn-out" onclick="regenPDF()">📄 &nbsp;Regenerate Invoice</button>
+              <button class="btn btn-blue" onclick="syncOneToApple()">🍎 &nbsp;Add to Apple Calendar</button>
             </div>
           </div>
-
         </div>
       </div>
-    </div>
+    </div><!-- /content -->
+  </div><!-- /main -->
+</div><!-- /shell -->
+
+<!-- Event popup -->
+<div class="cal-popup" id="cal-popup">
+  <button class="popup-close" onclick="closePopup()">✕</button>
+  <h4 id="pp-name"></h4>
+  <div class="cprow"><span>Dates</span><span id="pp-dates"></span></div>
+  <div class="cprow"><span>Type</span><span id="pp-type"></span></div>
+  <div class="cprow"><span>Venue</span><span id="pp-venue"></span></div>
+  <div class="cprow"><span>Balance</span><span id="pp-bal"></span></div>
+  <div style="display:flex;gap:6px;margin-top:11px">
+    <button class="btn btn-out btn-sm" id="pp-edit">✏️ Edit</button>
+    <button class="btn btn-blue btn-sm" id="pp-apple">🍎 Apple Cal</button>
   </div>
 </div>
 
 <div id="ov" onclick="ovClick(event)">
   <div id="modal">
-    <h3 id="m-title"></h3>
-    <p id="m-body"></p>
+    <h3 id="m-title"></h3><p id="m-body"></p>
     <div class="mbr" id="m-btns"></div>
   </div>
 </div>
-
 <div id="toasts"></div>
 
 <script>
-/* ── State ── */
-const BASE = (typeof window.API !== 'undefined') ? window.API : 'http://127.0.0.1:5050/api'
-let allBookings = [], filterMode = 'all', editingId = null
-let appPaths = { invoices: '', calendars: '' }
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+const BASE = (typeof window.API!=='undefined') ? window.API : 'http://127.0.0.1:5050/api'
+let allBookings=[], filterMode='all', editingId=null
+let appPaths={invoices:'',calendars:''}
+let calYear,calMonth,miniYear,miniMonth
+let advCount=0, selectedColour='#c9a84c'
 
-/* ── API ── */
-async function api(method, path, body) {
-  const opts = { method, headers:{'Content-Type':'application/json'} }
-  if (body) opts.body = JSON.stringify(body)
-  const r = await fetch(BASE + path, opts)
-  if (!r.ok) { const e = await r.json().catch(()=>{}); throw new Error((e&&e.error)||r.statusText) }
+/* ══════════════════════════════════════════════
+   API
+══════════════════════════════════════════════ */
+async function api(method,path,body){
+  const opts={method,headers:{'Content-Type':'application/json'}}
+  if(body) opts.body=JSON.stringify(body)
+  const r=await fetch(BASE+path,opts)
+  if(!r.ok){const e=await r.json().catch(()=>{});throw new Error((e&&e.error)||r.statusText)}
   return r.json()
 }
 
-/* ── Init ── */
-async function init() {
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+async function init(){
+  const n=new Date()
+  calYear=n.getFullYear();calMonth=n.getMonth()
+  miniYear=calYear;miniMonth=calMonth
   await refresh()
-  try { appPaths = await api('GET', '/paths') } catch(e) {}
-  document.getElementById('loader').style.display = 'none'
-  document.getElementById('shell').style.display  = 'flex'
-  startClock()
-  initCheckboxes()
-  initTiers()
-  initNav()
+  try{appPaths=await api('GET','/paths')}catch(e){}
+  document.getElementById('loader').style.display='none'
+  document.getElementById('shell').style.display='flex'
+  startClock();initCheckboxes();initTiers();initNav();addAdvance()
 }
 
-/* ── Clock ── */
-function startClock() {
-  const tick = () => {
-    const n = new Date()
-    document.getElementById('clock').textContent   = n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
-    document.getElementById('clkdate').textContent = n.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long',year:'numeric'})
+/* ══════════════════════════════════════════════
+   CLOCK
+══════════════════════════════════════════════ */
+function startClock(){
+  const tick=()=>{
+    const n=new Date()
+    document.getElementById('clock').textContent=n.toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit'})
+    document.getElementById('clkdate').textContent=n.toLocaleDateString('en-IN',{weekday:'short',day:'numeric',month:'long',year:'numeric'})
   }
-  tick(); setInterval(tick, 1000)
+  tick();setInterval(tick,1000)
 }
 
-/* ── Nav ── */
-function initNav() {
-  document.querySelectorAll('.si[data-pg]').forEach(el => {
-    el.addEventListener('click', () => {
-      if (el.dataset.pg === 'form') goNew()
-      else showPage(el.dataset.pg)
+/* ══════════════════════════════════════════════
+   NAV
+══════════════════════════════════════════════ */
+function initNav(){
+  document.querySelectorAll('.si[data-pg]').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const pg=el.dataset.pg
+      if(pg==='form') goNew()
+      else{showPage(pg);if(pg==='calendar') renderCalendar()}
     })
   })
-
-  document.getElementById('btn-invoices').addEventListener('click', async () => {
-    if (appPaths.invoices && window.electron) await window.electron.openFolder(appPaths.invoices)
-    else toast('Invoices folder: ' + (appPaths.invoices || 'invoices/'), 'info')
-  })
-
-  document.getElementById('btn-calendars').addEventListener('click', async () => {
-    if (appPaths.calendars && window.electron) await window.electron.openFolder(appPaths.calendars)
-    else toast('Calendars folder: ' + (appPaths.calendars || 'calendars/'), 'info')
+  document.getElementById('btn-invoices').addEventListener('click',async()=>{
+    if(appPaths.invoices&&window.electron) await window.electron.openFolder(appPaths.invoices)
+    else toast('Invoices: '+(appPaths.invoices||'invoices/'),'info')
   })
 }
 
-function showPage(pg) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'))
-  document.querySelectorAll('.si[data-pg]').forEach(s => s.classList.remove('on'))
+function showPage(pg){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('on'))
+  document.querySelectorAll('.si[data-pg]').forEach(s=>s.classList.remove('on'))
   document.getElementById('page-'+pg).classList.add('on')
   document.querySelector(`.si[data-pg="${pg}"]`)?.classList.add('on')
-  const titles = { bookings:'All Bookings', form: editingId ? `Edit Booking #${editingId}` : 'New Booking' }
-  document.getElementById('ptitle').textContent = titles[pg] || pg
+  const titles={bookings:'All Bookings',calendar:'Calendar',form:editingId?`Edit Booking #${editingId}`:'New Booking'}
+  document.getElementById('ptitle').textContent=titles[pg]||pg
+  closePopup()
 }
+function goNew(){editingId=null;clearForm();showPage('form')}
 
-function goNew() { editingId=null; clearForm(); showPage('form') }
-
-/* ── Refresh ── */
-async function refresh() {
-  const [rows, stats] = await Promise.all([api('GET','/bookings'), api('GET','/stats')])
-  allBookings = rows
-  document.getElementById('s-tot').textContent  = stats.total
-  document.getElementById('s-con').textContent  = stats.confirmed
-  document.getElementById('s-can').textContent  = stats.cancelled
-  document.getElementById('s-com').textContent  = stats.completed
-  document.getElementById('s-rev').textContent  = 'Rs. ' + Number(stats.revenue).toLocaleString('en-IN')
-  document.getElementById('s-pend').textContent = `Rs. ${Number(stats.pending_balance).toLocaleString('en-IN')} pending`
-  document.getElementById('badge').textContent  = stats.total
+/* ══════════════════════════════════════════════
+   REFRESH
+══════════════════════════════════════════════ */
+async function refresh(){
+  allBookings=await api('GET','/bookings')
+  document.getElementById('badge').textContent=allBookings.length
   renderList()
 }
 
-/* ── List ── */
-function setF(f, el) {
-  filterMode = f
-  document.querySelectorAll('.fchip').forEach(c => c.classList.remove('on'))
-  el.classList.add('on')
-  renderList()
+/* ══════════════════════════════════════════════
+   STATUS  processing = balance>0, completed = paid off
+══════════════════════════════════════════════ */
+function getStatus(b){
+  const raw=(b.payment_status||'').toLowerCase()
+  if(raw==='cancelled') return 'cancelled'
+  if(raw==='completed') return 'completed'
+  return parseFloat(b.balance_due||0)>0 ? 'processing' : 'completed'
 }
 
-function renderList() {
-  const q    = document.getElementById('search').value.toLowerCase()
-  const list = allBookings.filter(b => {
-    const st = (b.payment_status||'').toLowerCase()
-    if (filterMode !== 'all' && st !== filterMode) return false
-    if (!q) return true
-    return [b.client_name,b.event_type,b.payment_status,b.booking_id,b.event_venue]
-      .some(v => (v||'').toLowerCase().includes(q))
+/* ══════════════════════════════════════════════
+   BOOKING LIST
+══════════════════════════════════════════════ */
+function setF(f,el){
+  filterMode=f
+  document.querySelectorAll('.fchip').forEach(c=>c.classList.remove('on'))
+  el.classList.add('on');renderList()
+}
+
+function renderList(){
+  const q=(document.getElementById('search').value||'').toLowerCase()
+  const tier=document.getElementById('tier-filter').value
+  const list=allBookings.filter(b=>{
+    const ds=getStatus(b)
+    if(filterMode!=='all'&&ds!==filterMode) return false
+    if(tier&&b.package_tier!==tier) return false
+    if(!q) return true
+    return [b.client_name,b.event_type,b.booking_id,b.event_venue,b.package_tier]
+      .some(v=>(v||'').toLowerCase().includes(q))
   })
-
-  const wrap = document.getElementById('blist')
-  if (!list.length) {
-    wrap.innerHTML = `<div class="empty"><div class="empty-ic">📭</div><p>No bookings found.</p></div>`
-    return
+  const wrap=document.getElementById('blist')
+  if(!list.length){
+    wrap.innerHTML=`<div class="empty"><div class="empty-ic">📭</div><p>No bookings found.</p></div>`;return
   }
-
-  const fmt = v => Number(v||0).toLocaleString('en-IN')
-  wrap.innerHTML = list.map(b => {
-    const st  = (b.payment_status||'').toLowerCase()
-    const cnt = (b.packages||'').split(',').filter(Boolean).length
-    const adv1 = parseFloat(b.advance1||0), adv2 = parseFloat(b.advance2||0)
+  const fmt=v=>Number(v||0).toLocaleString('en-IN')
+  wrap.innerHTML=list.map(b=>{
+    const ds=getStatus(b)
+    const lbl=ds==='processing'?'Processing':ds==='completed'?'Completed':'Cancelled'
+    const cnt=(b.packages||'').split(',').filter(Boolean).length
+    const bal=parseFloat(b.balance_due||0)
+    const col=b.event_colour||'#c9a84c'
+    const totalAdv=parseFloat(b.total_advance||0)
     return `
     <div class="bcard">
-      <div class="bstrip ${st}"></div>
+      <div class="bstrip" style="background:${col}"></div>
       <div class="bbody">
         <div class="br1">
           <div class="bname">${x(b.client_name)}</div>
           <div class="bid-tag">#${b.booking_id}</div>
-          <div class="bstat ${st}">${b.payment_status||''}</div>
+          <div class="bstat ${ds}">${lbl}</div>
         </div>
-        <div class="br2">
-          <span class="bdates">📅 ${b.start_date} → ${b.end_date}</span>
-          <span>· ${x(b.event_type)}</span>
-          <span>· ${x(b.event_venue||'—')}</span>
-          <span>· ${cnt} service${cnt!==1?'s':''}</span>
-          <span>· ${x(b.package_tier||'Basic')}</span>
-        </div>
-        <div class="br3">
-          Rs. ${fmt(b.package_amount)} total &nbsp;|&nbsp;
-          Adv1: Rs. ${fmt(b.advance1)} &nbsp;|&nbsp;
-          Adv2: Rs. ${fmt(b.advance2)} &nbsp;|&nbsp;
-          Total Adv: Rs. ${fmt(adv1+adv2)} &nbsp;|&nbsp;
-          <strong>Balance: Rs. ${fmt(b.balance_due)}</strong>
+        <div class="bmeta">
+          <span class="bm"><span class="bm-dates">${b.start_date}${b.end_date!==b.start_date?'→'+b.end_date:''}</span></span>
+          <span class="bm">${x(b.event_type)}</span>
+          <span class="bm bm-venue">${x(b.event_venue||'—')}</span>
+          <span class="bm">${cnt} svc</span>
+          <span class="bm bm-tier">${x(b.package_tier||'Basic')}</span>
+          <span class="bm">Rs.${fmt(b.package_amount)}</span>
+          <span class="bm ${bal>0?'bm-bal-due':'bm-bal-clear'}">Bal:Rs.${fmt(bal)}</span>
         </div>
       </div>
       <div class="bacts">
-        <button class="btn btn-out btn-sm" onclick="editBooking('${b.booking_id}')">✏️ Edit</button>
-        <button class="btn btn-out btn-sm" onclick="getPDF('${b.booking_id}')">📄 PDF</button>
-        <button class="btn btn-out btn-sm" onclick="getICS('${b.booking_id}')">📅 ICS</button>
-        <button class="btn btn-del btn-sm" onclick="askDelete('${b.booking_id}','${x(b.client_name)}')">🗑 Delete</button>
+        <button class="btn btn-out btn-sm" onclick="editBooking('${b.booking_id}')" title="Edit">✏️</button>
+        <button class="btn btn-out btn-sm" onclick="getPDF('${b.booking_id}')" title="PDF">📄</button>
+        <button class="btn btn-blue btn-sm" onclick="syncBookingToApple('${b.booking_id}')" title="Apple Calendar">🍎</button>
+        <button class="btn btn-del btn-sm" onclick="askDelete('${b.booking_id}','${x(b.client_name)}')" title="Delete">🗑</button>
       </div>
     </div>`
   }).join('')
 }
 
-/* ── Utils & Form ── */
-function initCheckboxes() {
-  document.querySelectorAll('#pkgs .ck').forEach(el => {
-    el.addEventListener('click', () => {
-      const cb = el.querySelector('input'); cb.checked = !cb.checked
-      el.classList.toggle('on', cb.checked)
-    })
-  })
+/* ══════════════════════════════════════════════
+   COLOUR PICKER
+══════════════════════════════════════════════ */
+function pickColour(el,colour){
+  document.querySelectorAll('#colour-row .cswatch,.custom-swatch').forEach(s=>s.classList.remove('on'))
+  el.classList.add('on')
+  selectedColour=colour
+  document.getElementById('f-colour').value=colour
 }
-function initTiers() {
-  document.querySelectorAll('#tiers .rpill').forEach(el => {
-    el.addEventListener('click', () => {
-      document.querySelectorAll('#tiers .rpill').forEach(r => r.classList.remove('on'))
-      el.classList.add('on')
-    })
-  })
+function pickColourCustom(colour){
+  document.querySelectorAll('#colour-row .cswatch').forEach(s=>s.classList.remove('on'))
+  document.getElementById('custom-swatch').classList.add('on')
+  selectedColour=colour
+  document.getElementById('f-colour').value=colour
 }
-function getPackages() { return [...document.querySelectorAll('#pkgs .ck.on')].map(e => e.dataset.k) }
-function setPackages(pkgs) {
-  document.querySelectorAll('#pkgs .ck').forEach(el => {
-    const on = pkgs.includes(el.dataset.k)
-    el.classList.toggle('on', on); el.querySelector('input').checked = on
-  })
-}
-function getTier() { return document.querySelector('#tiers .rpill.on')?.dataset.t || 'Basic' }
-function setTier(t) { document.querySelectorAll('#tiers .rpill').forEach(r => r.classList.toggle('on', r.dataset.t===t)) }
-
-function calcBal() {
-  const amt = parseFloat(document.getElementById('f-amt').value) || 0
-  const adv1 = parseFloat(document.getElementById('f-adv1').value) || 0
-  const adv2 = parseFloat(document.getElementById('f-adv2').value) || 0
-  const totalAdv = adv1 + adv2; const bal = amt - totalAdv
-  const fmt = n => 'Rs. ' + n.toLocaleString('en-IN', {minimumFractionDigits:2, maximumFractionDigits:2})
-  document.getElementById('ps-amt').textContent = fmt(amt)
-  document.getElementById('ps-adv1').textContent = fmt(adv1)
-  document.getElementById('ps-adv2').textContent = fmt(adv2)
-  document.getElementById('ps-total-adv').textContent = fmt(totalAdv)
-  document.getElementById('ps-bal').textContent = fmt(bal)
-  document.getElementById('ps-bal').style.color = bal < 0 ? 'var(--red)' : 'var(--gold)'
-}
-
-async function checkConflict() {
-  const s = document.getElementById('f-start').value, e = document.getElementById('f-end').value
-  const banner = document.getElementById('conflict')
-  if (!s || !e) { banner.classList.remove('show'); return }
-  try {
-    const res = await api('POST','/conflict',{ start_date:s, end_date:e, exclude_id:editingId||'' })
-    if (res.conflicts.length) {
-      const lines = res.conflicts.map(c => `• ${c.client_name} (${c.event_type}) — Clashes: ${c.clashing_dates.join(', ')}`)
-      banner.innerHTML = `<strong>⚠️ Date Conflict Detected</strong><br>${lines.join('<br>')}`
-      banner.classList.add('show')
-    } else banner.classList.remove('show')
-  } catch(e) { banner.classList.remove('show') }
-}
-
-async function saveBooking() {
-  const name = v('f-name'), phone = v('f-phone'), start = v('f-start'), end = v('f-end'), amt = v('f-amt'), status = v('f-status')
-  if (!name || !phone || !start || !end || !amt) { toast('Please fill all required fields (*)', 'err'); return }
-  if (end < start) { toast('End Date cannot be before Start Date', 'err'); return }
-
-  const adv1 = parseFloat(v('f-adv1')) || 0, adv2 = parseFloat(v('f-adv2')) || 0
-  const body = {
-    client_name: name, contact_number: phone, event_type: v('f-etype'), event_venue: v('f-venue'),
-    event_time: v('f-time'), start_date: start, end_date: end, packages: getPackages().join(','),
-    package_amount: amt, advance1: String(adv1), advance2: String(adv2),
-    balance_due: String((parseFloat(amt)||0) - adv1 - adv2), payment_status: status,
-    album_type: v('f-atype'), album_count: v('f-acount'), frame_12x18: v('f-f1'),
-    frame_16x24: v('f-f2'), frame_20x30: v('f-f3'), calendar_addon: v('f-cal'), package_tier: getTier(),
+function applyColour(colour){
+  selectedColour=colour||'#c9a84c'
+  document.getElementById('f-colour').value=selectedColour
+  document.querySelectorAll('#colour-row .cswatch').forEach(s=>s.classList.remove('on'))
+  document.getElementById('custom-swatch').classList.remove('on')
+  const match=document.querySelector(`#colour-row .cswatch[data-c="${selectedColour}"]`)
+  if(match) match.classList.add('on')
+  else{
+    document.getElementById('custom-swatch').classList.add('on')
+    const inp=document.getElementById('custom-colour')
+    if(inp) inp.value=selectedColour
   }
-
-  const btn = document.getElementById('save-btn'); btn.disabled = true; btn.textContent = 'Saving…'
-  try {
-    let saved = editingId ? await api('PUT', `/bookings/${editingId}`, body) : await api('POST', '/bookings', body)
-    toast('Booking saved!', 'ok')
-    try {
-      const pr = await api('POST', `/invoice/${saved.booking_id}`)
-      window.electron?.openFile(pr.path)
-    } catch(e) {}
-    await refresh(); goNew()
-  } catch(e) { toast('Save failed: '+e.message, 'err') } finally { btn.disabled = false; btn.innerHTML = '💾 &nbsp;Save Booking' }
 }
 
-async function editBooking(bid) {
-  const b = await api('GET', `/bookings/${bid}`); editingId = bid
-  set('f-name', b.client_name); set('f-phone', b.contact_number); set('f-etype', b.event_type); set('f-venue', b.event_venue)
-  set('f-time', b.event_time); set('f-start', b.start_date); set('f-end', b.end_date); set('f-amt', b.package_amount)
-  set('f-adv1', b.advance1); set('f-adv2', b.advance2); set('f-status', b.payment_status); set('f-atype', b.album_type)
-  set('f-acount', b.album_count); set('f-f1', b.frame_12x18); set('f-f2', b.frame_16x24); set('f-f3', b.frame_20x30)
-  set('f-cal', b.calendar_addon); setPackages((b.packages||'').split(',').filter(Boolean)); setTier(b.package_tier||'Basic')
-  calcBal(); document.getElementById('eid').textContent = '#'+bid; document.getElementById('editbar').style.display = 'block'
-  document.getElementById('edit-btns').style.display = 'flex'; showPage('form')
+/* ══════════════════════════════════════════════
+   DYNAMIC ADVANCES
+══════════════════════════════════════════════ */
+function addAdvance(value=''){
+  advCount++
+  const n=advCount
+  const row=document.createElement('div')
+  row.className='adv-row';row.id=`adv-row-${n}`
+  row.innerHTML=`
+    <span class="adv-lbl">Adv ${n}</span>
+    <input type="number" id="adv-${n}" placeholder="0.00" oninput="calcBal()" value="${value}"/>
+    <button class="adv-rm" onclick="removeAdv(${n})" title="Remove">✕</button>`
+  document.getElementById('adv-list').appendChild(row);calcBal()
+}
+function removeAdv(n){document.getElementById(`adv-row-${n}`)?.remove();calcBal()}
+function getAdvances(){
+  return [...document.querySelectorAll('#adv-list .adv-row')]
+    .map(r=>parseFloat(r.querySelector('input[type=number]')?.value||0)||0)
+}
+function setAdvances(advs){
+  document.getElementById('adv-list').innerHTML='';advCount=0
+  if(!advs||!advs.length){addAdvance();return}
+  advs.forEach(v=>addAdvance(v))
 }
 
-function clearForm() {
-  editingId = null; ['f-name','f-phone','f-venue','f-time','f-start','f-end','f-amt','f-adv1','f-adv2','f-atype','f-acount','f-f1','f-f2','f-f3'].forEach(id => set(id,''))
-  set('f-etype','Wedding'); set('f-status','Confirmed'); set('f-cal','No'); setPackages([]); setTier('Basic'); calcBal()
-  document.getElementById('editbar').style.display = 'none'; document.getElementById('edit-btns').style.display = 'none'
+/* ══════════════════════════════════════════════
+   BALANCE
+══════════════════════════════════════════════ */
+function calcBal(){
+  const amt=parseFloat(document.getElementById('f-amt').value)||0
+  const advs=getAdvances(), tot=advs.reduce((s,v)=>s+v,0)
+  const bal=amt-tot
+  const fmt=n=>'Rs. '+n.toLocaleString('en-IN',{minimumFractionDigits:2,maximumFractionDigits:2})
+  document.getElementById('ps-amt').textContent=fmt(amt)
+  document.getElementById('ps-adv-rows').innerHTML=advs.map((v,i)=>
+    `<div class="prow sub"><span>↳ Advance ${i+1}</span><span>${fmt(v)}</span></div>`
+  ).join('')
+  document.getElementById('ps-total').textContent=fmt(tot)
+  document.getElementById('ps-bal').textContent=fmt(bal)
+  document.getElementById('ps-bal').style.color=bal<0?'var(--red)':bal===0?'var(--grn)':'var(--gold)'
 }
 
-async function getPDF(bid) { try { const r = await api('POST', `/invoice/${bid}`); window.electron?.openFile(r.path) } catch(e) { toast('PDF error', 'err') } }
-async function getICS(bid) { try { const r = await api('POST', `/calendar/${bid}`); window.electron?.openFile(r.path) } catch(e) { toast('ICS error', 'err') } }
-async function regenPDF() { if (editingId) await getPDF(editingId) }
-async function exportICS() { if (editingId) await getICS(editingId) }
+/* ══════════════════════════════════════════════
+   CONFLICT
+══════════════════════════════════════════════ */
+async function checkConflict(){
+  const s=document.getElementById('f-start').value,e=document.getElementById('f-end').value
+  const b=document.getElementById('conflict')
+  if(!s||!e){b.classList.remove('show');return}
+  try{
+    const res=await api('POST','/conflict',{start_date:s,end_date:e,exclude_id:editingId||''})
+    if(res.conflicts.length){
+      const lines=res.conflicts.map(c=>`• ${c.client_name} (${c.event_type}) — Clashes: ${c.clashing_dates.join(', ')}`)
+      b.innerHTML=`<strong>⚠️ Date Conflict Detected</strong><br>${lines.join('<br>')}`;b.classList.add('show')
+    }else b.classList.remove('show')
+  }catch(e){b.classList.remove('show')}
+}
 
-function askDelete(bid, name) {
-  modal('Delete Booking', `Delete booking for ${name}?`, [
-    { label:'Cancel', fn:closeModal, outline:true },
-    { label:'Delete', fn: async () => { closeModal(); await api('DELETE', `/bookings/${bid}`); await refresh() }, danger:true },
+/* ══════════════════════════════════════════════
+   SAVE
+══════════════════════════════════════════════ */
+async function saveBooking(){
+  const name=v('f-name'),phone=v('f-phone'),start=v('f-start'),end=v('f-end'),amt=v('f-amt'),status=v('f-status')
+  if(!name||!phone||!start||!end||!amt){toast('Please fill all required (*) fields','err');return}
+  if(end<start){toast('End Date cannot be before Start Date','err');return}
+  const advs=getAdvances(),tot=advs.reduce((s,v)=>s+v,0)
+  const body={
+    client_name:name,contact_number:phone,event_type:v('f-etype'),event_venue:v('f-venue'),
+    event_time:v('f-time'),start_date:start,end_date:end,packages:getPackages().join(','),
+    package_amount:amt,advances:JSON.stringify(advs),total_advance:String(tot),
+    balance_due:String((parseFloat(amt)||0)-tot),payment_status:status,
+    album_type:v('f-atype'),album_count:v('f-acount'),frame_12x18:v('f-f1'),
+    frame_16x24:v('f-f2'),frame_20x30:v('f-f3'),calendar_addon:v('f-cal'),
+    package_tier:getTier(),event_colour:document.getElementById('f-colour').value||'#c9a84c',
+  }
+  const btn=document.getElementById('save-btn');btn.disabled=true;btn.textContent='Saving…'
+  try{
+    let saved=editingId?await api('PUT',`/bookings/${editingId}`,body):await api('POST','/bookings',body)
+    toast('Booking saved!','ok')
+    try{const pr=await api('POST',`/invoice/${saved.booking_id}`);window.electron?.openFile(pr.path)}catch(e){}
+    editingId=saved.booking_id
+    document.getElementById('eid').textContent='#'+saved.booking_id
+    document.getElementById('editbar').style.display='block'
+    document.getElementById('edit-btns').style.display='flex'
+    await refresh();renderCalendar()
+  }catch(e){toast('Save failed: '+e.message,'err')}
+  finally{btn.disabled=false;btn.innerHTML='💾 &nbsp;Save Booking'}
+}
+
+/* ══════════════════════════════════════════════
+   EDIT
+══════════════════════════════════════════════ */
+async function editBooking(bid){
+  const b=await api('GET',`/bookings/${bid}`)
+  editingId=bid
+  set('f-name',b.client_name);set('f-phone',b.contact_number);set('f-etype',b.event_type)
+  set('f-venue',b.event_venue);set('f-time',b.event_time);set('f-start',b.start_date)
+  set('f-end',b.end_date);set('f-amt',b.package_amount);set('f-status',b.payment_status)
+  set('f-atype',b.album_type);set('f-acount',b.album_count);set('f-f1',b.frame_12x18)
+  set('f-f2',b.frame_16x24);set('f-f3',b.frame_20x30);set('f-cal',b.calendar_addon)
+  setPackages((b.packages||'').split(',').filter(Boolean))
+  setTier(b.package_tier||'Basic')
+  applyColour(b.event_colour||'#c9a84c')
+  try{
+    const advs=JSON.parse(b.advances||'[]')
+    setAdvances(advs.length?advs:[parseFloat(b.advance1||0),parseFloat(b.advance2||0)].filter(v=>v>0))
+  }catch(e){setAdvances([])}
+  calcBal()
+  document.getElementById('eid').textContent='#'+bid
+  document.getElementById('editbar').style.display='block'
+  document.getElementById('edit-btns').style.display='flex'
+  document.getElementById('conflict').classList.remove('show')
+  showPage('form')
+}
+
+/* ══════════════════════════════════════════════
+   CLEAR
+══════════════════════════════════════════════ */
+function clearForm(){
+  editingId=null
+  ;['f-name','f-phone','f-venue','f-time','f-start','f-end','f-amt',
+    'f-atype','f-acount','f-f1','f-f2','f-f3'].forEach(id=>set(id,''))
+  set('f-etype','Wedding');set('f-status','Confirmed');set('f-cal','No')
+  setPackages([]);setTier('Basic');applyColour('#c9a84c')
+  document.getElementById('adv-list').innerHTML='';advCount=0;addAdvance();calcBal()
+  document.getElementById('editbar').style.display='none'
+  document.getElementById('edit-btns').style.display='none'
+  document.getElementById('conflict').classList.remove('show')
+}
+
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+function initCheckboxes(){
+  document.querySelectorAll('#pkgs .ck').forEach(el=>{
+    el.addEventListener('click',()=>{
+      const cb=el.querySelector('input');cb.checked=!cb.checked;el.classList.toggle('on',cb.checked)
+    })
+  })
+}
+function initTiers(){
+  document.querySelectorAll('#tiers .rpill').forEach(el=>{
+    el.addEventListener('click',()=>{
+      document.querySelectorAll('#tiers .rpill').forEach(r=>r.classList.remove('on'));el.classList.add('on')
+    })
+  })
+}
+function getPackages(){return[...document.querySelectorAll('#pkgs .ck.on')].map(e=>e.dataset.k)}
+function setPackages(pkgs){
+  document.querySelectorAll('#pkgs .ck').forEach(el=>{
+    const on=pkgs.includes(el.dataset.k);el.classList.toggle('on',on);el.querySelector('input').checked=on
+  })
+}
+function getTier(){return document.querySelector('#tiers .rpill.on')?.dataset.t||'Basic'}
+function setTier(t){document.querySelectorAll('#tiers .rpill').forEach(r=>r.classList.toggle('on',r.dataset.t===t))}
+
+/* ══════════════════════════════════════════════
+   PDF / APPLE CALENDAR
+══════════════════════════════════════════════ */
+async function getPDF(bid){
+  try{const r=await api('POST',`/invoice/${bid}`);toast('Invoice generated','ok');window.electron?.openFile(r.path)}
+  catch(e){toast('PDF error: '+e.message,'err')}
+}
+async function regenPDF(){if(editingId)await getPDF(editingId)}
+
+async function syncBookingToApple(bid){
+  toast('Generating .ics…','info')
+  try{
+    const r=await api('POST',`/calendar/${bid}`)
+    if(window.electron){await window.electron.openFile(r.path);toast('Opening in Apple Calendar ✓','ok')}
+    else toast('ICS saved: '+r.path,'ok')
+  }catch(e){toast('Error: '+e.message,'err')}
+}
+async function syncOneToApple(){if(editingId)await syncBookingToApple(editingId)}
+async function syncAllToApple(){
+  const active=allBookings.filter(b=>(b.payment_status||'').toLowerCase()!=='cancelled')
+  if(!active.length){toast('No active bookings','info');return}
+  toast(`Syncing ${active.length} bookings…`,'info')
+  let done=0
+  for(const b of active){
+    try{const r=await api('POST',`/calendar/${b.booking_id}`);if(window.electron)await window.electron.openFile(r.path);done++}catch(e){}
+  }
+  toast(`${done} events sent to Apple Calendar`,'ok')
+}
+
+/* ══════════════════════════════════════════════
+   CALENDAR VIEW
+══════════════════════════════════════════════ */
+function renderCalendar(){renderMainGrid();renderMiniCal();renderUpcoming()}
+
+function bookingsOnDate(d){
+  const ds=d.toISOString().split('T')[0]
+  return allBookings.filter(b=>{try{return ds>=b.start_date&&ds<=b.end_date}catch(e){return false}})
+}
+
+const MONTHS=['January','February','March','April','May','June','July','August','September','October','November','December']
+const MONTHS_S=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+const DAYS=['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+
+function renderMainGrid(){
+  document.getElementById('cal-title').textContent=`${MONTHS[calMonth]} ${calYear}`
+  const grid=document.getElementById('cal-grid');grid.innerHTML=''
+  DAYS.forEach(d=>{const el=document.createElement('div');el.className='cal-dow';el.textContent=d;grid.appendChild(el)})
+  const first=new Date(calYear,calMonth,1),lastDay=new Date(calYear,calMonth+1,0).getDate()
+  const startDow=first.getDay(),today=new Date()
+  for(let i=0;i<startDow;i++) grid.appendChild(makeDayCell(new Date(calYear,calMonth,-startDow+i+1),true))
+  for(let d=1;d<=lastDay;d++){
+    const date=new Date(calYear,calMonth,d)
+    const cell=makeDayCell(date,false)
+    if(date.toDateString()===today.toDateString()) cell.classList.add('today')
+    grid.appendChild(cell)
+  }
+}
+
+function makeDayCell(date,otherMonth){
+  const cell=document.createElement('div')
+  cell.className='cal-day'+(otherMonth?' other-month':'')
+  const num=document.createElement('div');num.className='cal-day-num';num.textContent=date.getDate()
+  cell.appendChild(num)
+  const bks=bookingsOnDate(date)
+  if(bks.length) cell.classList.add('has-event')
+  bks.forEach(b=>{
+    const pill=document.createElement('div');pill.className='cal-pill'
+    const col=b.event_colour||'#c9a84c'
+    pill.style.cssText=`background:${col}22;color:${col};border-left:2px solid ${col}`
+    pill.textContent=b.client_name
+    pill.onclick=e=>{e.stopPropagation();showPopup(b,e)}
+    cell.appendChild(pill)
+  })
+  return cell
+}
+
+function renderMiniCal(){
+  document.getElementById('mini-title').textContent=`${MONTHS_S[miniMonth]} ${miniYear}`
+  const grid=document.getElementById('mini-grid');grid.innerHTML=''
+  ;['S','M','T','W','T','F','S'].forEach(d=>{const el=document.createElement('div');el.className='mini-dow';el.textContent=d;grid.appendChild(el)})
+  const today=new Date(),first=new Date(miniYear,miniMonth,1)
+  const lastDay=new Date(miniYear,miniMonth+1,0).getDate(),startDow=first.getDay()
+  for(let i=0;i<startDow;i++){const el=document.createElement('div');el.className='mini-day other';grid.appendChild(el)}
+  for(let d=1;d<=lastDay;d++){
+    const date=new Date(miniYear,miniMonth,d),el=document.createElement('div')
+    el.className='mini-day'+(bookingsOnDate(date).length?' has-event':'')+(date.toDateString()===today.toDateString()?' today':'')
+    el.textContent=d;el.onclick=()=>{calYear=miniYear;calMonth=miniMonth;renderMainGrid()}
+    grid.appendChild(el)
+  }
+}
+
+function renderUpcoming(){
+  const today=new Date().toISOString().split('T')[0]
+  const up=allBookings.filter(b=>b.start_date>=today&&(b.payment_status||'').toLowerCase()!=='cancelled')
+    .sort((a,b)=>a.start_date.localeCompare(b.start_date)).slice(0,8)
+  const wrap=document.getElementById('upcoming-list')
+  if(!up.length){wrap.innerHTML='<div style="font-size:11px;color:var(--txt3)">No upcoming events</div>';return}
+  wrap.innerHTML=up.map(b=>`
+    <div class="upcoming-item" style="border-left-color:${b.event_colour||'var(--gold)'}" onclick="editBooking('${b.booking_id}')">
+      <div class="ui-name">${x(b.client_name)}</div>
+      <div class="ui-date" style="color:${b.event_colour||'var(--gold)'}">${b.start_date}${b.end_date!==b.start_date?' → '+b.end_date:''}</div>
+      <div class="ui-type">${x(b.event_type)} · ${x(b.package_tier||'Basic')}</div>
+    </div>`).join('')
+}
+
+function calPrev(){calMonth--;if(calMonth<0){calMonth=11;calYear--}renderMainGrid()}
+function calNext(){calMonth++;if(calMonth>11){calMonth=0;calYear++}renderMainGrid()}
+function calToday(){const n=new Date();calYear=n.getFullYear();calMonth=n.getMonth();renderMainGrid()}
+function miniPrev(){miniMonth--;if(miniMonth<0){miniMonth=11;miniYear--}renderMiniCal()}
+function miniNext(){miniMonth++;if(miniMonth>11){miniMonth=0;miniYear++}renderMiniCal()}
+
+/* ══════════════════════════════════════════════
+   POPUP
+══════════════════════════════════════════════ */
+function showPopup(b,evt){
+  const p=document.getElementById('cal-popup')
+  const col=b.event_colour||'var(--gold)'
+  document.getElementById('pp-name').textContent=b.client_name
+  document.getElementById('pp-name').style.color=col
+  document.getElementById('pp-dates').textContent=b.start_date+(b.end_date!==b.start_date?' → '+b.end_date:'')
+  document.getElementById('pp-type').textContent=b.event_type
+  document.getElementById('pp-venue').textContent=b.event_venue||'—'
+  document.getElementById('pp-bal').textContent='Rs. '+Number(b.balance_due||0).toLocaleString('en-IN')
+  document.getElementById('pp-edit').onclick=()=>{closePopup();editBooking(b.booking_id)}
+  document.getElementById('pp-apple').onclick=()=>syncBookingToApple(b.booking_id)
+  p.style.left=Math.min(evt.clientX+12,window.innerWidth-310)+'px'
+  p.style.top=Math.min(evt.clientY+12,window.innerHeight-240)+'px'
+  p.classList.add('open')
+}
+function closePopup(){document.getElementById('cal-popup').classList.remove('open')}
+document.addEventListener('click',e=>{if(!e.target.closest('#cal-popup')&&!e.target.closest('.cal-pill')) closePopup()})
+
+/* ══════════════════════════════════════════════
+   DELETE / MODAL / TOAST
+══════════════════════════════════════════════ */
+function askDelete(bid,name){
+  modal('Delete Booking',`Delete booking for ${name}?\n\nThis cannot be undone.`,[
+    {label:'Cancel',fn:closeModal,outline:true},
+    {label:'Delete',fn:async()=>{
+      closeModal();await api('DELETE',`/bookings/${bid}`)
+      toast('Booking deleted','info');await refresh();renderCalendar()
+    },danger:true}
   ])
 }
-
-function modal(title, body, btns) {
-  document.getElementById('m-title').textContent = title; document.getElementById('m-body').textContent = body
-  const bc = document.getElementById('m-btns'); bc.innerHTML = ''
-  btns.forEach(b => {
-    const btn = document.createElement('button'); btn.textContent = b.label; btn.className = 'btn ' + (b.danger?'btn-del':b.outline?'btn-out':'btn-gold'); btn.onclick = b.fn; bc.appendChild(btn)
+function modal(title,body,btns){
+  document.getElementById('m-title').textContent=title
+  document.getElementById('m-body').textContent=body
+  const bc=document.getElementById('m-btns');bc.innerHTML=''
+  btns.forEach(b=>{
+    const btn=document.createElement('button')
+    btn.textContent=b.label;btn.className='btn '+(b.danger?'btn-del':b.outline?'btn-out':'btn-gold')
+    btn.onclick=b.fn;bc.appendChild(btn)
   })
   document.getElementById('ov').classList.add('open')
 }
-function closeModal() { document.getElementById('ov').classList.remove('open') }
-function ovClick(e) { if (e.target===document.getElementById('ov')) closeModal() }
-function toast(msg, type='info') {
-  const el = document.createElement('div'); el.className = `toast ${type}`; el.innerHTML = `<span>${type==='ok'?'✅':'💡'}</span><span>${msg}</span>`
-  document.getElementById('toasts').appendChild(el); setTimeout(() => el.remove(), 4000)
+function closeModal(){document.getElementById('ov').classList.remove('open')}
+function ovClick(e){if(e.target===document.getElementById('ov')) closeModal()}
+function toast(msg,type='info'){
+  const icons={ok:'✅',err:'❌',info:'💡'}
+  const el=document.createElement('div');el.className=`toast ${type}`
+  el.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`
+  document.getElementById('toasts').appendChild(el);setTimeout(()=>el.remove(),4500)
 }
-const v = id => document.getElementById(id)?.value?.trim()||''
-const set = (id,val) => { const el=document.getElementById(id); if(el) el.value=val||'' }
-const x = s => String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
 
-let _tries = 0
-function tryBoot() {
+const v=id=>document.getElementById(id)?.value?.trim()||''
+const set=(id,val)=>{const el=document.getElementById(id);if(el) el.value=val||''}
+const x=s=>String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+
+/* ══════════════════════════════════════════════
+   BOOT
+══════════════════════════════════════════════ */
+let _t=0
+function tryBoot(){
   fetch(BASE+'/ping').then(()=>init()).catch(()=>{
-    _tries++; document.getElementById('loader-msg').textContent = `Starting backend… (${_tries})`
-    if (_tries < 40) setTimeout(tryBoot, 600)
-    else document.getElementById('loader-msg').textContent = '❌ Backend failed. Run: python3 backend/server.py'
+    _t++;document.getElementById('loader-msg').textContent=`Starting backend… (${_t})`
+    if(_t<40) setTimeout(tryBoot,600)
+    else document.getElementById('loader-msg').textContent='❌ Backend failed. Run: python3 backend/server.py'
   })
 }
 tryBoot()
