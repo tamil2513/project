@@ -415,11 +415,11 @@ def make_ics(b: dict) -> str:
 
     lines = [
         'BEGIN:VCALENDAR', 'VERSION:2.0',
-        'PRODID:-//Saree Photography//EN',
+        'PRODID:-//Shree Photography//EN',
         'CALSCALE:GREGORIAN', 'METHOD:PUBLISH',
         'BEGIN:VEVENT',
         f'UID:{bid}-{uuid.uuid4()}@sareephotography',
-        f'SUMMARY:{esc("Saree Photography - " + b.get("client_name","") + " (" + b.get("event_type","") + ")")}',
+        f'SUMMARY:{esc("Shree Photography - " + b.get("client_name","") + " (" + b.get("event_type","") + ")")}',
         f'DESCRIPTION:{esc(desc)}',
         f'LOCATION:{esc(b.get("event_venue",""))}',
         f'DTSTART;VALUE=DATE:{s.strftime("%Y%m%d")}',
@@ -443,5 +443,5 @@ def open_path(p: str):
 # ── Main ───────────────────────────────────────────────────────────────────────
 if __name__ == '__main__':
     ensure()
-    print('Saree Photography backend running on http://127.0.0.1:5050', flush=True)
+    print('Shree Photography backend running on http://127.0.0.1:5050', flush=True)
     app.run(host='127.0.0.1', port=5050, debug=False)

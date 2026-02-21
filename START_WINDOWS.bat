@@ -8,7 +8,7 @@ cd /d "%~dp0"
 
 echo.
 echo ================================================
-echo   📷  Saree Photography Booking System
+echo   📷  Shree Photography Booking System
 echo ================================================
 echo.
 
