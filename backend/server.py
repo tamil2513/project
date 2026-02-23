@@ -1,5 +1,5 @@
 """
-Saree Photography — Flask Backend
+Shree Photography — Flask Backend
 Runs on http://127.0.0.1:5050
 """
 
@@ -41,9 +41,11 @@ FIELDS = [
     'booking_id', 'client_name', 'contact_number', 'booking_date',
     'event_type', 'event_venue', 'event_time',
     'start_date', 'end_date', 'packages',
-    'package_amount', 'advance1', 'advance2', 'balance_due', 'payment_status',
+    'package_amount', 'advance1', 'advance2', 'advances', 'total_advance',
+    'balance_due', 'payment_status',
     'album_type', 'album_count', 'frame_12x18', 'frame_16x24', 'frame_20x30',
-    'calendar_addon', 'package_tier', 'invoice_path',
+    'frames', 'calendar_addon', 'package_tier', 'event_colour',
+    'invoice_path',
 ]
 
 PKG_LABELS = {
@@ -81,9 +83,19 @@ def write_all(rows):
 def calc_balance(b):
     try:
         amt  = float(b.get('package_amount') or 0)
-        adv1 = float(b.get('advance1') or 0)
-        adv2 = float(b.get('advance2') or 0)
-        b['balance_due'] = str(round(amt - adv1 - adv2, 2))
+        # Use advances JSON array if available, else fall back to advance1/2
+        advances_json = b.get('advances', '')
+        if advances_json:
+            import json as _json
+            try:
+                advs = _json.loads(advances_json)
+                total_adv = sum(float(a) for a in advs if a)
+            except Exception:
+                total_adv = float(b.get('advance1') or 0) + float(b.get('advance2') or 0)
+        else:
+            total_adv = float(b.get('advance1') or 0) + float(b.get('advance2') or 0)
+        b['total_advance'] = str(round(total_adv, 2))
+        b['balance_due']   = str(round(amt - total_adv, 2))
     except Exception:
         b['balance_due'] = '0'
 
@@ -109,10 +121,19 @@ def get_booking(bid):
 @app.route('/api/bookings', methods=['POST'])
 def create_booking():
     data = request.json
-    data['booking_id']   = str(uuid.uuid4())[:8].upper()
+    # Sequential IDs: find the highest existing numeric ID and increment
+    rows = read_all()
+    max_id = 0
+    for r in rows:
+        try:
+            n = int(r.get('booking_id', '0'))
+            if n > max_id: max_id = n
+        except (ValueError, TypeError):
+            pass
+    data['booking_id']   = str(max_id + 1)
     data['booking_date'] = date.today().isoformat()
     calc_balance(data)
-    rows = read_all(); rows.append(data); write_all(rows)
+    rows.append(data); write_all(rows)
     return jsonify(data), 201
 
 @app.route('/api/bookings/<bid>', methods=['PUT'])
@@ -326,30 +347,46 @@ def make_pdf(b: dict) -> str:
     # Add-ons
     section('ADD-ONS & EXTRAS')
     info_table([
-        ['Album Type',  b.get('album_type','—'),  'Album Count',     b.get('album_count','—')],
-        ['Frame 12×18', b.get('frame_12x18','0'), 'Frame 16×24',     b.get('frame_16x24','0')],
-        ['Frame 20×30', b.get('frame_20x30','0'), 'Calendar Add-on', b.get('calendar_addon','No')],
+        ['Album Type',  b.get('album_type','—') or '—', 'Album Count',     b.get('album_count','—') or '—'],
+        ['Calendar Add-on', b.get('calendar_addon','No'), 'Package Tier', b.get('package_tier','').upper()],
     ])
 
-    # Payment — now shows advance1 + advance2
+    # Payment — handles advances JSON array
     section('PAYMENT SUMMARY')
+    import json as _json
     try:
-        amt  = float(b.get('package_amount') or 0)
-        adv1 = float(b.get('advance1') or 0)
-        adv2 = float(b.get('advance2') or 0)
-        bal  = float(b.get('balance_due') or 0)
+        amt = float(b.get('package_amount') or 0)
+        bal = float(b.get('balance_due') or 0)
+        # Build advance rows
+        advances_json = b.get('advances', '')
+        adv_list = []
+        if advances_json:
+            try:
+                adv_list = [float(a) for a in _json.loads(advances_json) if a]
+            except Exception:
+                pass
+        if not adv_list:
+            a1 = float(b.get('advance1') or 0)
+            a2 = float(b.get('advance2') or 0)
+            if a1: adv_list.append(a1)
+            if a2: adv_list.append(a2)
+        total_adv = sum(adv_list)
     except Exception:
-        amt = adv1 = adv2 = bal = 0
+        amt = bal = total_adv = 0; adv_list = []
 
     sc2 = GREEN if status == 'CONFIRMED' else (RED if status == 'CANCELLED' else GOLD)
-    pt  = Table([
-        ['Package Amount',    f'Rs. {amt:,.2f}'],
-        ['Advance 1 (Paid)',  f'Rs. {adv1:,.2f}'],
-        ['Advance 2 (Paid)',  f'Rs. {adv2:,.2f}'],
-        ['Total Advance',     f'Rs. {adv1+adv2:,.2f}'],
-        ['Balance Due',       f'Rs. {bal:,.2f}'],
-        ['Payment Status',    status],
-    ], colWidths=[100*mm, 85*mm])
+    pay_rows = [['Package Amount', f'Rs. {amt:,.2f}']]
+    for i, a in enumerate(adv_list, 1):
+        pay_rows.append([f'Advance {i} (Paid)', f'Rs. {a:,.2f}'])
+    pay_rows.append(['Total Advance Paid', f'Rs. {total_adv:,.2f}'])
+    pay_rows.append(['Balance Due',        f'Rs. {bal:,.2f}'])
+    pay_rows.append(['Payment Status',     status])
+
+    tot_row = len(pay_rows) - 3
+    bal_row = len(pay_rows) - 2
+    sts_row = len(pay_rows) - 1
+
+    pt = Table(pay_rows, colWidths=[100*mm, 85*mm])
     pt.setStyle(TableStyle([
         ('BACKGROUND',(0,0),(0,-1),LGREY),
         ('FONTNAME',(0,0),(0,-1),'Helvetica-Bold'),
@@ -359,18 +396,39 @@ def make_pdf(b: dict) -> str:
         ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
         ('TOPPADDING',(0,0),(-1,-1),6), ('BOTTOMPADDING',(0,0),(-1,-1),6),
         ('LEFTPADDING',(0,0),(-1,-1),8), ('RIGHTPADDING',(0,0),(-1,-1),8),
-        # Highlight total advance row
-        ('BACKGROUND',(0,3),(-1,3),colors.HexColor('#e8f4e8')),
-        ('FONTNAME',(0,3),(-1,3),'Helvetica-Bold'),
-        # Highlight balance row
-        ('BACKGROUND',(0,4),(-1,4),colors.HexColor('#fff3cd')),
-        ('FONTSIZE',(0,4),(-1,4),12),
-        ('FONTNAME',(0,4),(-1,4),'Helvetica-Bold'),
-        # Status colour
-        ('TEXTCOLOR',(1,5),(1,5),sc2),
-        ('FONTNAME',(1,5),(1,5),'Helvetica-Bold'),
+        ('BACKGROUND',(0,tot_row),(-1,tot_row),colors.HexColor('#e8f4e8')),
+        ('FONTNAME',(0,tot_row),(-1,tot_row),'Helvetica-Bold'),
+        ('BACKGROUND',(0,bal_row),(-1,bal_row),colors.HexColor('#fff3cd')),
+        ('FONTSIZE',(0,bal_row),(-1,bal_row),12),
+        ('FONTNAME',(0,bal_row),(-1,bal_row),'Helvetica-Bold'),
+        ('TEXTCOLOR',(1,sts_row),(1,sts_row),sc2),
+        ('FONTNAME',(1,sts_row),(1,sts_row),'Helvetica-Bold'),
     ]))
     story.append(pt)
+    # Frames section if present
+    frames_json = b.get('frames', '')
+    if frames_json:
+        try:
+            frames = _json.loads(frames_json)
+            if frames:
+                section('FRAMES ORDERED')
+                frows = [['#', 'Size (inches)', 'Quantity']]
+                for i, fr in enumerate(frames, 1):
+                    frows.append([str(i), f"{fr.get('w','?')} × {fr.get('h','?')}", str(fr.get('qty','1'))])
+                ft = Table(frows, colWidths=[15*mm, 130*mm, 40*mm])
+                ft.setStyle(TableStyle([
+                    ('BACKGROUND',(0,0),(-1,0),DARK), ('TEXTCOLOR',(0,0),(-1,0),WHITE),
+                    ('FONTNAME',(0,0),(-1,0),'Helvetica-Bold'),
+                    ('FONTSIZE',(0,0),(-1,-1),9),
+                    ('ALIGN',(0,0),(-1,-1),'CENTER'),
+                    ('GRID',(0,0),(-1,-1),0.4,colors.HexColor('#cccccc')),
+                    ('ROWBACKGROUNDS',(0,1),(-1,-1),[WHITE,colors.HexColor('#fafafa')]),
+                    ('VALIGN',(0,0),(-1,-1),'MIDDLE'),
+                    ('TOPPADDING',(0,0),(-1,-1),5), ('BOTTOMPADDING',(0,0),(-1,-1),5),
+                ]))
+                story.append(ft)
+        except Exception:
+            pass
     story.append(Spacer(1, 8*mm))
     story.append(HRFlowable(width='100%', thickness=1, color=GOLD, spaceAfter=4))
     story.append(Paragraph(
