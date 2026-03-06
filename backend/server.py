@@ -33,8 +33,34 @@ else:
     ROOT = Path(__file__).parent.parent
 
 DATA_FILE = ROOT / 'data'      / 'events.csv'
-INVOICES  = ROOT / 'invoices'
-CALENDARS = ROOT / 'calendars'
+INVOICES      = ROOT / 'invoices'
+CALENDARS     = ROOT / 'calendars'
+SETTINGS_FILE = ROOT / 'data' / 'settings.json'
+
+def load_settings():
+    try:
+        if SETTINGS_FILE.exists():
+            return _json.loads(SETTINGS_FILE.read_text(encoding='utf-8'))
+    except Exception:
+        pass
+    return {}
+
+def save_settings_data(d):
+    SETTINGS_FILE.parent.mkdir(parents=True, exist_ok=True)
+    SETTINGS_FILE.write_text(_json.dumps(d, indent=2), encoding='utf-8')
+
+def get_invoices_dir():
+    """Returns the configured invoice folder (custom path or default)."""
+    custom = load_settings().get('invoices_dir', '').strip()
+    if custom:
+        p = Path(custom)
+        try:
+            p.mkdir(parents=True, exist_ok=True)
+            return p
+        except Exception:
+            pass
+    INVOICES.mkdir(parents=True, exist_ok=True)
+    return INVOICES
 
 FIELDS = [
     'booking_id', 'client_name', 'contact_number', 'booking_date',
@@ -64,7 +90,7 @@ PKG_LABELS = {
 
 # ── Helpers ────────────────────────────────────────────────────────────────────
 def iso_to_display(iso):
-    """yyyy-mm-dd  →  dd/mm/yyyy"""
+    """yyyy-mm-dd to dd/mm/yyyy"""
     if not iso: return ''
     try:
         y, m, d = iso.split('-')
@@ -73,7 +99,7 @@ def iso_to_display(iso):
         return iso
 
 def display_to_iso(disp):
-    """dd/mm/yyyy  →  yyyy-mm-dd"""
+    """dd/mm/yyyy  ->  yyyy-mm-dd"""
     if not disp: return ''
     try:
         parts = disp.split('/')
@@ -171,29 +197,63 @@ def update_booking(bid):
 
 @app.route('/api/bookings/<bid>', methods=['DELETE'])
 def delete_booking(bid):
-    write_all([r for r in read_all() if r['booking_id'] != bid])
+    # Find the booking first so we can get client name for .ics filename
+    all_rows = read_all()
+    booking  = next((r for r in all_rows if r['booking_id'] == bid), None)
+    write_all([r for r in all_rows if r['booking_id'] != bid])
+    # Delete matching .ics calendar file if it exists
+    if booking:
+        import glob
+        # Match by booking_id prefix so name changes don't matter
+        for ics in glob.glob(str(CALENDARS / f'Event_{bid}_*.ics')):
+            try:
+                Path(ics).unlink()
+            except Exception:
+                pass
     return jsonify({'ok': True})
 
 @app.route('/api/conflict', methods=['POST'])
 def conflict():
-    body = request.json
-    try:
-        s = date.fromisoformat(body['start_date'])
-        e = date.fromisoformat(body['end_date'])
-    except Exception:
-        return jsonify({'conflicts': []})
-    proposed   = date_set(s, e)
+    body       = request.json
     exclude_id = body.get('exclude_id', '')
-    conflicts  = []
+
+    # Accept either slot_dates list (new) or legacy start_date/end_date range
+    slot_dates_raw = body.get('slot_dates')
+    if slot_dates_raw:
+        try:
+            proposed = {date.fromisoformat(d) for d in slot_dates_raw if d}
+        except Exception:
+            return jsonify({'conflicts': []})
+    else:
+        try:
+            s = date.fromisoformat(body['start_date'])
+            e = date.fromisoformat(body['end_date'])
+            proposed = date_set(s, e)
+        except Exception:
+            return jsonify({'conflicts': []})
+
+    if not proposed:
+        return jsonify({'conflicts': []})
+
+    conflicts = []
     for b in read_all():
         if b.get('payment_status', '').upper() == 'CANCELLED': continue
         if b.get('booking_id') == exclude_id: continue
+        # Build this booking's date set from its event_slots (exact dates) or range
         try:
-            overlap = proposed & date_set(
-                date.fromisoformat(b['start_date']),
-                date.fromisoformat(b['end_date'])
-            )
+            import json as _json
+            b_dates = set()
+            if b.get('event_slots'):
+                for sl in _json.loads(b['event_slots']):
+                    d = sl.get('date_iso','')
+                    if d: b_dates.add(date.fromisoformat(d))
+            if not b_dates:
+                b_dates = date_set(
+                    date.fromisoformat(b['start_date']),
+                    date.fromisoformat(b['end_date'])
+                )
         except Exception: continue
+        overlap = proposed & b_dates
         if overlap:
             conflicts.append({
                 'booking_id':     b['booking_id'],
@@ -206,10 +266,25 @@ def conflict():
 @app.route('/api/paths')
 def get_paths():
     return jsonify({
-        'invoices':  str(INVOICES.resolve()),
+        'invoices':  str(get_invoices_dir().resolve()),
         'calendars': str(CALENDARS.resolve()),
         'data':      str(DATA_FILE.parent.resolve()),
     })
+
+@app.route('/api/settings', methods=['GET'])
+def get_settings():
+    s = load_settings()
+    s.setdefault('invoices_dir', '')
+    return jsonify(s)
+
+@app.route('/api/settings', methods=['POST'])
+def post_settings():
+    data = request.json or {}
+    s = load_settings()
+    if 'invoices_dir' in data:
+        s['invoices_dir'] = data['invoices_dir']
+    save_settings_data(s)
+    return jsonify({'ok': True, 'invoices_dir': s.get('invoices_dir','')})
 
 @app.route('/api/invoice/<bid>', methods=['POST'])
 def gen_invoice(bid):
@@ -247,10 +322,10 @@ def make_pdf(b: dict) -> str:
     from reportlab.lib.styles import ParagraphStyle
     from reportlab.lib.enums import TA_CENTER, TA_RIGHT, TA_LEFT
 
-    INVOICES.mkdir(exist_ok=True)
+    inv_dir = get_invoices_dir()
     bid   = b.get('booking_id', 'XXXX')
     fname = f"Invoice_{bid}_{b.get('client_name','').replace(' ','_')}.pdf"
-    path  = str(INVOICES / fname)
+    path  = str(inv_dir / fname)
 
     GOLD   = colors.HexColor('#c9a84c')
     DARK   = colors.HexColor('#0f0f1a')

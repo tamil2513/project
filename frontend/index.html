@@ -76,9 +76,10 @@ body::before{
 #main{flex:1;display:flex;flex-direction:column;overflow:hidden}
 #topbar{display:flex;align-items:center;padding:0 24px;height:56px;background:linear-gradient(180deg,var(--surf) 0%,var(--bg) 100%);border-bottom:1px solid var(--bdr);gap:12px;flex-shrink:0;}
 #topbar h2{font-family:'Playfair Display',serif;font-size:19px;font-weight:600;flex:1;letter-spacing:.05em;color:var(--txt);}
-#content{flex:1;overflow:hidden;position:relative}
+#content{flex:1;overflow:hidden;position:relative;background:var(--bg)}
 .page{position:absolute;inset:0;overflow-y:auto;padding:20px 24px;display:none}
 .page.on{display:block}
+#page-bookings.on{display:flex;flex-direction:column;overflow:hidden;padding:0}
 
 /* ────────────────────────────────────────────────
    CARDS
@@ -257,9 +258,9 @@ textarea{resize:vertical;min-height:80px}
 .bm-type{color:var(--txt);font-weight:500}
 .bm-svc{color:var(--txt3)}
 .bm-amt{color:var(--txt);font-weight:600;font-family:'JetBrains Mono',monospace;font-size:clamp(10px,1.2vw,12px)}
-.bm-bal-due{color:var(--amb);font-weight:700}
+.bm-bal-due{color:rgba(251,191,36,.55);font-weight:600}
 .bm-bal-clear{color:var(--grn);font-weight:700}
-.bm-venue{overflow:hidden;text-overflow:ellipsis;max-width:min(220px,28vw);color:var(--txt2)}
+.bm-venue{overflow:hidden;text-overflow:ellipsis;max-width:min(220px,28vw);color:var(--txt)}
 .bacts{display:flex;flex-direction:column;justify-content:center;gap:4px;padding:10px 10px;border-left:1px solid var(--bdr);background:var(--card2);flex-shrink:0;}
 
 /* ────────────────────────────────────────────────
@@ -281,13 +282,54 @@ textarea{resize:vertical;min-height:80px}
 .cal-day{min-height:78px;background:var(--card);border:1px solid var(--bdr);border-radius:var(--rs);padding:6px;transition:all .15s;overflow:hidden;}
 .cal-day:hover{border-color:var(--bdr3);background:var(--card2)}
 .cal-day.today{border-color:var(--gold);background:var(--goldg2)}
-.cal-day.other-month{opacity:.25}
-.cal-day-num{font-size:11px;font-weight:600;color:var(--txt3);margin-bottom:4px;font-family:'JetBrains Mono',monospace}
+.cal-day.other-month{opacity:.3}
+.cal-day-num{font-size:12px;font-weight:700;color:#fff;margin-bottom:4px;font-family:'JetBrains Mono',monospace;text-shadow:0 1px 3px rgba(0,0,0,.6);letter-spacing:.02em}
 .cal-day.today .cal-day-num{color:var(--gold)}
 .cal-pill{font-size:9.5px;padding:2px 6px;border-radius:4px;margin-bottom:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer;font-weight:500;transition:opacity .15s;border-left:2px solid transparent;}
 .cal-pill:hover{opacity:.75}
+/* ── Calendar stats bar ── */
+.cal-stats-bar{display:flex;border-bottom:1px solid var(--bdr);flex-shrink:0;background:var(--bg2)}
+.cal-stat{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 4px;border-right:1px solid var(--bdr);gap:2px;cursor:default;transition:background .15s}
+.cal-stat:last-child{border-right:none}
+.cal-stat:hover{background:var(--card)}
+.cal-stat-n{font-size:16px;font-weight:800;font-family:'JetBrains Mono',monospace;line-height:1}
+.cal-stat-n.gold{color:var(--gold)}.cal-stat-n.green{color:var(--grn)}.cal-stat-n.amb{color:var(--amb)}
+.cal-stat-lbl{font-size:7.5px;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;font-weight:600}
+/* ── View toggle ── */
+.cal-view-toggle{display:flex;gap:3px;background:var(--card2);border:1px solid var(--bdr2);border-radius:var(--rs);padding:3px}
+.cal-vtbtn{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:12px;padding:5px 12px;border-radius:6px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s}
+.cal-vtbtn.active{background:var(--gold);color:#06060c;font-weight:700}
+.cal-vtbtn:not(.active):hover{background:var(--card3);color:var(--txt)}
+/* ── List view ── */
+.cal-list-wrap{flex:1;overflow-y:auto;padding:16px;display:none}
+.cal-list-month{margin-bottom:20px}
+.cal-list-month-hdr{font-family:'Playfair Display',serif;font-size:12px;color:var(--gold);font-weight:700;letter-spacing:.07em;text-transform:uppercase;margin-bottom:9px;display:flex;align-items:center;gap:10px}
+.cal-list-month-hdr::after{content:'';flex:1;height:1px;background:var(--bdr2)}
+.cal-list-item{display:flex;align-items:stretch;background:var(--card);border:1px solid var(--bdr);border-radius:9px;margin-bottom:6px;overflow:hidden;cursor:pointer;transition:all .17s}
+.cal-list-item:hover{border-color:var(--bdr3);transform:translateX(2px);box-shadow:0 3px 14px rgba(0,0,0,.4)}
+.cal-list-date{width:58px;min-width:58px;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;border-right:1px solid var(--bdr)}
+.cal-list-date-d{font-size:21px;font-weight:800;font-family:'JetBrains Mono',monospace;color:#fff;line-height:1}
+.cal-list-date-m{font-size:8.5px;color:var(--txt3);letter-spacing:.08em;text-transform:uppercase;margin-top:2px;font-weight:600}
+.cal-list-date-dow{font-size:8px;color:var(--txt3)}
+.cal-list-stripe{width:3px;flex-shrink:0}
+.cal-list-body{flex:1;padding:10px 13px;min-width:0}
+.cal-list-name{font-size:13px;font-weight:700;color:var(--txt);margin-bottom:3px}
+.cal-list-meta{font-size:11px;color:var(--txt3);display:flex;gap:10px;flex-wrap:wrap}
+.cal-list-badge{padding:2px 9px;border-radius:99px;font-size:9px;font-weight:700;letter-spacing:.05em;align-self:center;flex-shrink:0;margin-right:10px;border:1px solid transparent}
+.cal-list-badge.ok{background:var(--grn-bg);color:var(--grn);border-color:var(--grn-bdr)}
+.cal-list-badge.due{background:var(--amb-bg);color:var(--amb);border-color:var(--amb-bdr)}
+/* ── Upcoming panel ── */
+.upcoming-panel{display:none;width:278px;min-width:278px;border-left:1px solid var(--bdr);background:var(--surf);overflow-y:auto;flex-direction:column}
+.upcoming-panel.open{display:flex}
+.upcoming-panel-hdr{padding:13px 15px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.up-item{padding:10px 11px;background:var(--card);border:1px solid var(--bdr);border-radius:9px;margin-bottom:6px;cursor:pointer;transition:all .15s;border-left:3px solid transparent}
+.up-item:hover{border-color:var(--bdr2);background:var(--card2)}
+/* ── Settings modal ── */
+.settings-ov{position:fixed;inset:0;background:rgba(0,0,0,.8);backdrop-filter:blur(6px);z-index:600;display:none;align-items:center;justify-content:center}
+.settings-ov.open{display:flex}
+.settings-box{background:var(--card);border:1px solid var(--bdr3);border-radius:var(--r);padding:28px;max-width:520px;width:92%;box-shadow:0 24px 80px rgba(0,0,0,.8);animation:mIn .2s ease}
 .mini-cal{padding:15px}
-.mini-nav{display:flex;align-items:center;justify-content:space-between;margin-bottom:9px}
+.mini-nav{display:flex;align-items:center;justify-content:center;margin-bottom:9px}
 .mini-nav button{background:none;border:none;color:var(--txt3);cursor:pointer;font-size:13px;padding:2px 6px;border-radius:5px;transition:all .15s}
 .mini-nav button:hover{color:var(--gold);background:var(--goldg)}
 .mini-title{font-size:10.5px;font-weight:600;color:var(--gold);letter-spacing:.06em}
@@ -402,6 +444,9 @@ textarea{resize:vertical;min-height:80px}
       <div class="si" id="btn-invoices">
         <span class="si-ic">📁</span>Open Invoices
       </div>
+      <div class="si" id="btn-settings">
+        <span class="si-ic">⚙️</span>Settings
+      </div>
     </nav>
     <div class="sclock">
       <div class="tm" id="clock">--:--:--</div>
@@ -419,25 +464,43 @@ textarea{resize:vertical;min-height:80px}
     <div id="content">
 
       <!-- ═══ BOOKINGS PAGE ═══════════════════════════ -->
-      <div class="page on" id="page-bookings">
-        <div class="sbar">
-          <span class="sbar-ic">🔍</span>
-          <input type="text" id="search" placeholder="Search name, event, venue, ID…" oninput="renderList()"/>
-        </div>
-        <div class="frow">
-          <div class="fchip on" data-f="all"        onclick="setF('all',this)">All</div>
-          <div class="fchip"    data-f="processing"  onclick="setF('processing',this)">⏳ Processing</div>
-          <div class="fchip"    data-f="completed"   onclick="setF('completed',this)">✅ Completed</div>
-          <div class="fsep"></div>
-          <div class="tier-sel">
-            <select id="tier-filter" onchange="renderList()">
-              <option value="">All Tiers</option>
-              <option>Silver</option><option>Gold</option>
-              <option>Platinum</option><option>Diamond</option>
-            </select>
+      <div class="page on" id="page-bookings" style="padding:0;overflow:hidden">
+        <div style="padding:20px 24px 0;flex-shrink:0">
+          <div class="sbar">
+            <span class="sbar-ic">🔍</span>
+            <input type="text" id="search" placeholder="Search name, event, venue, ID…" oninput="renderList()"/>
+          </div>
+          <div class="frow" style="align-items:center">
+            <div class="fchip on" data-f="all"        onclick="setF('all',this)">All</div>
+            <div class="fchip"    data-f="processing"  onclick="setF('processing',this)">⏳ Processing</div>
+            <div class="fchip"    data-f="completed"   onclick="setF('completed',this)">✅ Completed</div>
+            <div class="fsep"></div>
+            <div class="tier-sel">
+              <select id="tier-filter" onchange="renderList()">
+                <option value="">All Tiers</option>
+                <option>Silver</option><option>Gold</option>
+                <option>Platinum</option><option>Diamond</option>
+              </select>
+            </div>
+            <div style="margin-left:auto">
+              <button class="btn btn-out btn-sm" id="btn-upcoming-toggle" onclick="toggleUpcomingPanel()" style="font-size:12px">📆 Upcoming</button>
+            </div>
           </div>
         </div>
-        <div id="blist"></div>
+        <div style="display:flex;flex:1;overflow:hidden;height:calc(100% - 90px)">
+          <div style="flex:1;overflow-y:auto;padding:12px 24px 20px">
+            <div id="blist"></div>
+          </div>
+          <div class="upcoming-panel" id="upcoming-panel">
+            <div class="upcoming-panel-hdr">
+              <h4 style="font-family:'Playfair Display',serif;font-size:15px;color:var(--txt)">📆 Upcoming</h4>
+              <button onclick="toggleUpcomingPanel()" style="background:none;border:none;color:var(--txt3);cursor:pointer;font-size:17px;line-height:1">✕</button>
+            </div>
+            <div style="padding:12px;flex:1;overflow-y:auto" id="upcoming-panel-body">
+              <div style="font-size:11px;color:var(--txt3)">Loading…</div>
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- ═══ CALENDAR PAGE ════════════════════════════ -->
@@ -446,9 +509,7 @@ textarea{resize:vertical;min-height:80px}
           <div class="cal-left">
             <div class="mini-cal">
               <div class="mini-nav">
-                <button onclick="miniPrev()">◀</button>
                 <div class="mini-title" id="mini-title"></div>
-                <button onclick="miniNext()">▶</button>
               </div>
               <div class="mini-grid" id="mini-grid"></div>
             </div>
@@ -465,18 +526,26 @@ textarea{resize:vertical;min-height:80px}
                 <button onclick="calNext()">▶</button>
               </div>
               <h3 id="cal-title"></h3>
+              <div class="cal-view-toggle">
+                <button class="cal-vtbtn active" id="vt-grid" onclick="setCalView('grid')">⊞ Grid</button>
+                <button class="cal-vtbtn" id="vt-list" onclick="setCalView('list')">☰ List</button>
+              </div>
               <button class="btn btn-blue btn-sm" onclick="syncAllToApple()">🍎 Sync All</button>
             </div>
-            <div class="cal-grid-wrap">
+            <div class="cal-stats-bar" id="cal-stats-bar"></div>
+            <div class="cal-grid-wrap" id="cal-grid-wrap">
               <div class="cal-grid" id="cal-grid"></div>
+            </div>
+            <div class="cal-list-wrap" id="cal-list-wrap">
+              <div id="cal-list"></div>
             </div>
           </div>
         </div>
       </div>
 
       <!-- ═══ FORM PAGE ════════════════════════════════ -->
-      <div class="page" id="page-form">
-        <div style="max-width:900px;padding-bottom:40px">
+      <div class="page" id="page-form" style="display:none;flex-direction:row;gap:0;padding:0;overflow:hidden">
+        <div style="flex:1;max-width:900px;padding:20px 24px 40px;overflow-y:auto">
           <div id="conflict"></div>
           <div id="editbar">✏️ &nbsp;Editing booking &nbsp;<strong id="eid"></strong></div>
 
@@ -695,6 +764,11 @@ textarea{resize:vertical;min-height:80px}
             </div>
           </div>
         </div>
+        <!-- Upcoming panel on form page -->
+        <div id="form-upcoming-panel" style="width:260px;min-width:260px;border-left:1px solid var(--bdr);background:var(--surf);overflow-y:auto;padding:16px;flex-shrink:0;display:flex;flex-direction:column;gap:0">
+          <div style="font-size:10px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bdr)">📆 Upcoming</div>
+          <div id="form-upcoming-list"></div>
+        </div>
       </div>
     </div><!-- /content -->
   </div><!-- /main -->
@@ -712,6 +786,34 @@ textarea{resize:vertical;min-height:80px}
     <button class="btn btn-out btn-sm" id="pp-edit">✏️ Edit</button>
     <button class="btn btn-blue btn-sm" id="pp-apple">🍎 Apple</button>
     <button class="btn btn-sm" id="pp-google" style="background:rgba(66,133,244,.08);color:#4285f4;border:1px solid rgba(66,133,244,.25)">📅 Google</button>
+  </div>
+</div>
+
+<!-- Settings modal -->
+<div class="settings-ov" id="settings-ov" onclick="if(event.target===this)closeSettings()">
+  <div class="settings-box">
+    <h3 style="font-family:'Playfair Display',serif;font-size:19px;margin-bottom:6px">⚙️ Settings</h3>
+    <p style="color:var(--txt3);font-size:12px;margin-bottom:22px">Configure invoice folder and app preferences</p>
+    <div style="background:var(--card2);border:1px solid var(--bdr2);border-radius:10px;padding:16px;margin-bottom:14px">
+      <div style="font-size:10px;font-weight:700;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">📁 Invoice Save Location</div>
+      <div style="font-size:12px;color:var(--txt2);margin-bottom:10px">Choose where invoices (PDFs) are saved on your computer.</div>
+      <div style="display:flex;gap:9px;align-items:center">
+        <input type="text" id="s-invoice-path" placeholder="e.g. D:\Shree\Invoices  or  /Users/you/Invoices" style="flex:1;font-size:12px;font-family:'JetBrains Mono',monospace"/>
+        <button class="btn btn-out btn-sm" onclick="openCurrentInvoicesFolder()">📂 Open</button>
+      </div>
+      <div style="font-size:10.5px;color:var(--txt3);margin-top:9px;line-height:1.7">
+        💡 Leave blank to use the default <code style="background:var(--card3);padding:1px 5px;border-radius:4px;font-size:10px">invoices/</code> folder next to the app.
+        Type a full path like <code style="background:var(--card3);padding:1px 5px;border-radius:4px;font-size:10px">D:\Shree Photography\Invoices</code> to save anywhere you want.
+      </div>
+    </div>
+    <div style="background:var(--card2);border:1px solid var(--bdr2);border-radius:10px;padding:14px;margin-bottom:20px">
+      <div style="font-size:10px;font-weight:700;color:var(--txt3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Current Locations</div>
+      <div id="s-paths-info" style="font-size:11px;color:var(--txt3);font-family:'JetBrains Mono',monospace;line-height:2"></div>
+    </div>
+    <div style="display:flex;gap:9px;justify-content:flex-end">
+      <button class="btn btn-out" onclick="closeSettings()">Cancel</button>
+      <button class="btn btn-gold" onclick="saveSettings()">💾 Save Settings</button>
+    </div>
   </div>
 </div>
 
@@ -744,7 +846,7 @@ const SVC_LABELS = {
 }
 let svcQty = {}
 
-const EVENT_TYPES = ['Reception','Engagement','Wedding','Baby Shower','Birthday']
+const EVENT_TYPES = ['Engagement','Reception','Wedding','Baby Shower','Birthday']
 
 /* ══════════════════════════════════════════════
    DATE HELPERS  dd/mm/yyyy ↔ yyyy-mm-dd
@@ -765,6 +867,32 @@ function displayToIso(disp) {
 }
 // Format date label for card display
 function fmtDate(iso) { return isoToDisplay(iso) }
+// Local date → YYYY-MM-DD (avoids UTC timezone shift for IST / any timezone)
+function localISO(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`
+}
+
+// 12-hour time formatter
+function fmtTime12(t) {
+  if (!t) return ''
+  const [hh, mm] = String(t).split(':')
+  let h = parseInt(hh)
+  const ampm = h >= 12 ? 'PM' : 'AM'
+  if (h > 12) h -= 12
+  if (h === 0) h = 12
+  return `${h}:${mm||'00'} ${ampm}`
+}
+
+// Get all slot dates as comma-separated display string
+function getSlotDatesStr(b) {
+  if (b.event_slots) {
+    try {
+      const slots = JSON.parse(b.event_slots)
+      if (slots.length) return slots.map(s => s.date || fmtDate(s.date_iso || '')).filter(Boolean).join(', ')
+    } catch(e) {}
+  }
+  return fmtDate(b.start_date)
+}
 
 /* ══════════════════════════════════════════════
    API
@@ -816,20 +944,120 @@ function initNav() {
   })
   document.getElementById('btn-invoices').addEventListener('click', async () => {
     if (appPaths.invoices && window.electron) await window.electron.openFolder(appPaths.invoices)
-    else toast('Invoices: ' + (appPaths.invoices || 'invoices/'), 'info')
+    else toast('Invoices folder: ' + (appPaths.invoices || 'invoices/'), 'info')
   })
+  document.getElementById('btn-settings').addEventListener('click', openSettings)
+}
+
+/* ── Upcoming Panel ── */
+let upcomingOpen = false
+function toggleUpcomingPanel() {
+  upcomingOpen = !upcomingOpen
+  const panel = document.getElementById('upcoming-panel')
+  const btn   = document.getElementById('btn-upcoming-toggle')
+  panel.classList.toggle('open', upcomingOpen)
+  if (btn) {
+    btn.style.background   = upcomingOpen ? 'var(--goldg)' : ''
+    btn.style.borderColor  = upcomingOpen ? 'var(--goldbdr)' : ''
+    btn.style.color        = upcomingOpen ? 'var(--gold)' : ''
+  }
+  if (upcomingOpen) renderUpcomingPanel()
+}
+
+function renderUpcomingPanel() {
+  const wrap = document.getElementById('upcoming-panel-body'); if (!wrap) return
+  const today = localISO(new Date())
+  const rows = []
+  allBookings.filter(b => (b.payment_status||'').toLowerCase() !== 'cancelled').forEach(b => {
+    let slots = []
+    if (b.event_slots) { try { slots = JSON.parse(b.event_slots) } catch(e) {} }
+    if (!slots.length) slots = [{ date_iso: b.start_date, event_type: b.event_type }]
+    slots.filter(s => (s.date_iso||'') >= today).forEach(s => rows.push({ ...b, _date: s.date_iso, _type: s.event_type }))
+  })
+  rows.sort((a,b) => a._date.localeCompare(b._date))
+  if (!rows.length) { wrap.innerHTML = '<div style="font-size:11px;color:var(--txt3);text-align:center;padding:20px 0">No upcoming events 🎉</div>'; return }
+  wrap.innerHTML = rows.slice(0,30).map(b => {
+    const d = new Date(b._date + 'T00:00:00')
+    const dd  = String(d.getDate()).padStart(2,'0')
+    const mon = MONTHS_S ? MONTHS_S[d.getMonth()] : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][d.getMonth()]
+    const dow = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'][d.getDay()]
+    const col = b.event_colour || '#c9a84c'
+    const bal = parseFloat(b.balance_due||0)
+    const daysLeft = Math.ceil((d - new Date()) / 86400000)
+    const dLbl = daysLeft <= 0 ? 'Today!' : daysLeft === 1 ? 'Tomorrow' : daysLeft + 'd away'
+    return `<div class="up-item" style="border-left-color:${col}" onclick="editBooking('${b.booking_id}')">
+      <div style="display:flex;gap:10px">
+        <div style="min-width:38px;text-align:center;background:${col}18;border-radius:7px;padding:5px 4px;flex-shrink:0">
+          <div style="font-size:18px;font-weight:800;color:${col};line-height:1;font-family:'JetBrains Mono',monospace">${dd}</div>
+          <div style="font-size:8px;color:var(--txt3);font-weight:600;letter-spacing:.05em">${mon}</div>
+          <div style="font-size:7.5px;color:var(--txt3)">${dow}</div>
+        </div>
+        <div style="flex:1;min-width:0">
+          <div style="font-size:12.5px;font-weight:700;color:var(--txt);margin-bottom:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${x(b.client_name)}</div>
+          <div style="font-size:10.5px;color:var(--gold);font-weight:600">${x(b._type||b.event_type||'—')}</div>
+          ${b.event_venue ? '<div style="font-size:10px;color:var(--txt3)">📍 '+x(b.event_venue)+'</div>' : ''}
+        </div>
+      </div>
+      <div style="display:flex;justify-content:space-between;margin-top:6px;padding-top:5px;border-top:1px solid var(--bdr)">
+        <span style="font-size:9px;color:${daysLeft<=3?'var(--amb)':'var(--txt3)'};font-weight:${daysLeft<=3?700:400}">${dLbl}</span>
+        ${bal>0 ? '<span style="font-size:9px;color:var(--amb);font-weight:600">Due Rs.'+Math.round(bal).toLocaleString('en-IN')+'</span>' : '<span style="font-size:9px;color:var(--grn)">✓ Paid</span>'}
+      </div>
+    </div>`
+  }).join('')
+}
+
+/* ── Settings ── */
+function openSettings() {
+  const ov = document.getElementById('settings-ov')
+  ov.classList.add('open')
+  // Load current path from server
+  api('GET', '/settings').then(s => {
+    document.getElementById('s-invoice-path').value = s.invoices_dir || ''
+  }).catch(() => {
+    document.getElementById('s-invoice-path').value = localStorage.getItem('invoicePath') || ''
+  })
+  // Show current resolved paths
+  const info = document.getElementById('s-paths-info')
+  if (appPaths.invoices) {
+    info.innerHTML = `📄 Invoices:  ${appPaths.invoices}<br>📅 Calendars: ${appPaths.calendars||'—'}<br>🗄️ Data:      ${appPaths.data||'—'}`
+  } else {
+    info.textContent = 'Start the backend to see resolved paths.'
+  }
+}
+function closeSettings() {
+  document.getElementById('settings-ov').classList.remove('open')
+}
+async function saveSettings() {
+  const p = document.getElementById('s-invoice-path').value.trim()
+  try {
+    await api('POST', '/settings', { invoices_dir: p })
+    localStorage.setItem('invoicePath', p)
+    try { appPaths = await api('GET', '/paths') } catch(e) {}
+    toast('Settings saved! New invoices will go to the updated path.', 'ok')
+    closeSettings()
+  } catch(err) {
+    toast('Save failed: ' + err.message, 'err')
+  }
+}
+async function openCurrentInvoicesFolder() {
+  if (appPaths.invoices && window.electron) await window.electron.openFolder(appPaths.invoices)
+  else toast('Invoices folder: ' + (appPaths.invoices || 'invoices/'), 'info')
 }
 
 function showPage(pg) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('on'))
+  document.querySelectorAll('.page').forEach(p => { p.classList.remove('on'); p.style.display = '' })
   document.querySelectorAll('.si[data-pg]').forEach(s => s.classList.remove('on'))
-  document.getElementById('page-' + pg).classList.add('on')
+  const el = document.getElementById('page-' + pg)
+  el.classList.add('on')
+  if (pg === 'bookings') el.style.display = 'flex'
+  else if (pg === 'calendar') el.style.display = 'block'
+  else if (pg === 'form') el.style.display = 'flex'
   document.querySelector(`.si[data-pg="${pg}"]`)?.classList.add('on')
   const titles = { bookings: 'All Bookings', calendar: 'Calendar', form: editingId ? `Edit Booking #${editingId}` : 'New Booking' }
   document.getElementById('ptitle').textContent = titles[pg] || pg
   closePopup()
 }
-function goNew() { editingId = null; clearForm(); showPage('form') }
+function goNew() { editingId = null; clearForm(); showPage('form'); renderFormUpcoming() }
 
 /* ══════════════════════════════════════════════
    REFRESH
@@ -838,6 +1066,8 @@ async function refresh() {
   allBookings = await api('GET', '/bookings')
   document.getElementById('badge').textContent = allBookings.length
   renderList()
+  renderUpcoming()
+  renderFormUpcoming()
 }
 
 /* ══════════════════════════════════════════════
@@ -884,6 +1114,22 @@ function renderList() {
     const col = b.event_colour || '#c9a84c'
     // Use the permanent booking_id for display (the stable sequential number)
     const displayId = String(b.booking_id).padStart(3,'0')
+    // Build per-slot event details for multi-event bookings
+    let slots = []
+    if (b.event_slots) { try { slots = JSON.parse(b.event_slots) } catch(e) {} }
+    if (!slots.length) slots = [{ event_type: b.event_type, date_iso: b.start_date, date: fmtDate(b.start_date), time: b.event_time }]
+    const SHOW = 2
+    const shown = slots.slice(0, SHOW)
+    const extra = slots.length - SHOW
+    const uid = `slots-${b.booking_id}`
+    const slotRows = slots.map((s, i) => {
+      const d  = s.date || fmtDate(s.date_iso || '')
+      const t  = s.time ? ` <span style="color:var(--txt3);font-weight:400;margin-left:2px"> · ${fmtTime12(s.time)}</span>` : ''
+      const et = s.event_type ? ` <span style="color:#e2c97e;font-size:clamp(10px,1.2vw,12px);font-weight:500;margin-left:2px"> ${x(s.event_type)}</span>` : ''
+      const bullet = slots.length > 1 ? `<span style="background:${col}22;color:${col};font-size:8px;font-weight:700;border-radius:99px;padding:1px 6px;margin-right:6px;flex-shrink:0">${i+1}</span>` : ''
+      return `<div style="display:flex;align-items:center;flex-wrap:wrap;gap:10px;padding:4px 0">${bullet}<span class="bm-dates">📅 ${d}</span>${t}${et}</div>`
+    }).join('')
+    const moreBtn = ''
     return `
     <div class="bcard">
       <div class="bstrip" style="background:${col}"></div>
@@ -894,9 +1140,10 @@ function renderList() {
           <div class="bstat ${ds}">${lbl}</div>
         </div>
         <div class="bmeta">
+          <div style="display:flex;flex-direction:column;gap:3px;margin-bottom:4px">
+            ${slotRows}${moreBtn}
+          </div>
           <div class="bmeta-row">
-            <span class="bm"><span class="bm-dates">📅 ${fmtDate(b.start_date)}${b.end_date !== b.start_date ? ' → ' + fmtDate(b.end_date) : ''}</span></span>
-            <span class="bm bm-type">🎉 ${x(b.event_type)}</span>
             <span class="bm bm-venue">📍 ${x(b.event_venue || '—')}</span>
           </div>
           <div class="bmeta-row">
@@ -1124,10 +1371,9 @@ async function checkConflict() {
   const slots  = getEventSlots()
   const banner = document.getElementById('conflict')
   if (!slots.length || !slots[0].date_iso) { banner.classList.remove('show'); return }
-  const start = slots.map(s => s.date_iso).sort()[0]
-  const end   = slots.map(s => s.date_iso).sort().pop()
+  const slot_dates = slots.map(s => s.date_iso).filter(Boolean)
   try {
-    const res = await api('POST', '/conflict', { start_date: start, end_date: end, exclude_id: editingId || '' })
+    const res = await api('POST', '/conflict', { slot_dates, exclude_id: editingId || '' })
     if (res.conflicts.length) {
       const lines = res.conflicts.map(c => `• ${c.client_name} (${c.event_type}) — Clashes: ${c.clashing_dates.map(isoToDisplay).join(', ')}`)
       banner.innerHTML = `<strong>⚠️ Date Conflict Detected</strong><br>${lines.join('<br>')}`
@@ -1180,10 +1426,13 @@ async function saveBooking() {
       ? await api('PUT',  `/bookings/${editingId}`, body)
       : await api('POST', '/bookings', body)
     toast('Booking saved!', 'ok')
-    try {
-      const pr = await api('POST', `/invoice/${saved.booking_id}`)
-      if (window.electron) window.electron.openFile(pr.path)
-    } catch(e) {}
+    // Only auto-generate PDF for brand new bookings (not edits)
+    if (!editingId) {
+      try {
+        const pr = await api('POST', `/invoice/${saved.booking_id}`)
+        if (window.electron) window.electron.openFile(pr.path)
+      } catch(e) {}
+    }
     editingId = saved.booking_id
     document.getElementById('eid').textContent         = '#' + saved.booking_id
     document.getElementById('editbar').style.display   = 'block'
@@ -1234,7 +1483,7 @@ async function editBooking(bid) {
   document.getElementById('editbar').style.display   = 'block'
   document.getElementById('edit-btns').style.display = 'flex'
   document.getElementById('conflict').classList.remove('show')
-  showPage('form')
+  showPage('form'); renderFormUpcoming()
 }
 
 /* ══════════════════════════════════════════════
@@ -1319,7 +1568,7 @@ function buildGoogleCalUrl(b) {
   const fmt  = d => d.replace(/-/g, '')
   const start = fmt(b.start_date)
   const endD  = new Date(b.end_date); endD.setDate(endD.getDate() + 1)
-  const end   = endD.toISOString().split('T')[0].replace(/-/g,'')
+  const end   = localISO(endD).replace(/-/g,'')
   const title   = encodeURIComponent(`${b.client_name} — ${b.event_type} (Shree Photography)`)
   const loc     = encodeURIComponent(b.event_venue || '')
   const details = encodeURIComponent(
@@ -1347,16 +1596,67 @@ function addBookingToGoogle(bid) {
 /* ══════════════════════════════════════════════
    CALENDAR VIEW
 ══════════════════════════════════════════════ */
+let calView = 'grid'
+
+function setCalView(v) {
+  calView = v
+  document.getElementById('vt-grid').classList.toggle('active', v === 'grid')
+  document.getElementById('vt-list').classList.toggle('active', v === 'list')
+  document.getElementById('cal-grid-wrap').style.display = v === 'grid' ? 'block' : 'none'
+  document.getElementById('cal-list-wrap').style.display = v === 'list' ? 'block' : 'none'
+  if (v === 'list') renderListView()
+}
+
 function renderCalendar() { renderMainGrid(); renderMiniCal(); renderUpcoming() }
+
+function renderFormUpcoming() {
+  const wrap = document.getElementById('form-upcoming-list')
+  if (!wrap) return
+  const today = localISO(new Date())
+  const rows = []
+  allBookings.filter(b => (b.payment_status||'').toLowerCase() !== 'cancelled').forEach(b => {
+    let slots = []
+    if (b.event_slots) { try { slots = JSON.parse(b.event_slots) } catch(e) {} }
+    if (!slots.length) slots = [{ date_iso: b.start_date, event_type: b.event_type }]
+    slots.filter(s => (s.date_iso||'') >= today).forEach(s => {
+      rows.push({ ...b, _date: s.date_iso, _type: s.event_type || b.event_type })
+    })
+  })
+  rows.sort((a,b) => a._date.localeCompare(b._date))
+  if (!rows.length) { wrap.innerHTML = '<div style="font-size:11px;color:var(--txt3);text-align:center;padding:20px 0">No upcoming events</div>'; return }
+  wrap.innerHTML = rows.slice(0,20).map(b => {
+    const col = b.event_colour || 'var(--gold)'
+    const daysLeft = Math.ceil((new Date(b._date+'T00:00:00') - new Date()) / 86400000)
+    const dayTag = daysLeft === 0 ? 'Today' : daysLeft === 1 ? 'Tomorrow' : `${daysLeft}d`
+    return `<div onclick="editBooking('${b.booking_id}')" style="padding:9px 0;border-bottom:1px solid var(--bdr);cursor:pointer;display:flex;flex-direction:column;gap:3px">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:6px">
+        <span style="font-size:12px;font-weight:700;color:var(--txt);font-family:'Playfair Display',serif;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${x(b.client_name)}</span>
+        <span style="font-size:9px;font-weight:700;padding:2px 6px;border-radius:99px;background:${col}20;color:${col};flex-shrink:0">${dayTag}</span>
+      </div>
+      <div style="font-size:10.5px;color:${col};font-family:'JetBrains Mono',monospace;font-weight:600">${isoToDisplay(b._date)}</div>
+      <div style="font-size:10px;color:var(--txt3)">${x(b._type)}${b.event_venue ? ' · ' + x(b.event_venue) : ''}</div>
+    </div>`
+  }).join('')
+}
+
 function bookingsOnDate(d) {
-  const ds = d.toISOString().split('T')[0]
+  const ds = localISO(d)
   return allBookings.filter(b => {
-    try { return ds >= b.start_date && ds <= b.end_date } catch(e) { return false }
+    // Check individual event slot dates first (multi-event bookings)
+    if (b.event_slots) {
+      try {
+        const slots = JSON.parse(b.event_slots)
+        if (slots.length) return slots.some(s => (s.date_iso || '') === ds)
+      } catch(e) {}
+    }
+    // Fall back to start_date for single-event bookings
+    return b.start_date === ds
   })
 }
 const MONTHS   = ['January','February','March','April','May','June','July','August','September','October','November','December']
 const MONTHS_S = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
 const DAYS     = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+const DOW_S    = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
 
 function renderMainGrid() {
   document.getElementById('cal-title').textContent = `${MONTHS[calMonth]} ${calYear}`
@@ -1373,6 +1673,81 @@ function renderMainGrid() {
     if (date.toDateString() === today.toDateString()) cell.classList.add('today')
     grid.appendChild(cell)
   }
+  renderMonthStats()
+  if (calView === 'list') renderListView()
+}
+
+function renderMonthStats() {
+  const bar = document.getElementById('cal-stats-bar'); if (!bar) return
+  const prefix = `${calYear}-${String(calMonth+1).padStart(2,'0')}-`
+  // Check slot dates for multi-event bookings
+  const monthBks = allBookings.filter(b => {
+    if (b.event_slots) {
+      try {
+        const slots = JSON.parse(b.event_slots)
+        if (slots.length) return slots.some(s => (s.date_iso||'').startsWith(prefix))
+      } catch(e) {}
+    }
+    return (b.start_date||'').startsWith(prefix)
+  })
+  const active = monthBks.filter(b => (b.payment_status||'').toLowerCase() !== 'cancelled')
+  const total  = active.length
+  const done   = active.filter(b => parseFloat(b.balance_due||0) <= 0).length
+  const pend   = active.filter(b => parseFloat(b.balance_due||0) > 0).length
+  const items  = [
+    { n: total, lbl: 'Total Events', cls: 'gold'  },
+    { n: done,  lbl: 'Completed',    cls: 'green' },
+    { n: pend,  lbl: 'Pending',      cls: pend > 0 ? 'amb' : 'green' },
+  ]
+  bar.innerHTML = items.map(i => `<div class="cal-stat"><div class="cal-stat-n ${i.cls}">${i.n}</div><div class="cal-stat-lbl">${i.lbl}</div></div>`).join('')
+}
+
+function renderListView() {
+  const wrap = document.getElementById('cal-list'); if (!wrap) return
+  // Expand all bookings into per-slot rows
+  const rows = []
+  allBookings.forEach(b => {
+    let slots = []
+    if (b.event_slots) { try { slots = JSON.parse(b.event_slots) } catch(e) {} }
+    if (!slots.length) slots = [{ date_iso: b.start_date, event_type: b.event_type, time: b.event_time }]
+    slots.forEach(s => { if (s.date_iso) rows.push({ ...b, _date: s.date_iso, _type: s.event_type, _time: s.time }) })
+  })
+  rows.sort((a,b) => a._date.localeCompare(b._date))
+  if (!rows.length) { wrap.innerHTML = '<div style="color:var(--txt3);font-size:12px;padding:20px 0">No bookings found</div>'; return }
+  // Group by month
+  const groups = {}
+  rows.forEach(r => { const k = r._date.slice(0,7); if (!groups[k]) groups[k] = []; groups[k].push(r) })
+  wrap.innerHTML = Object.entries(groups).map(([k, items]) => {
+    const [y,m] = k.split('-')
+    const hdr = MONTHS[parseInt(m)-1] + ' ' + y
+    const brows = items.map(b => {
+      const d   = new Date(b._date + 'T00:00:00')
+      const dd  = String(d.getDate()).padStart(2,'0')
+      const mon = MONTHS_S[d.getMonth()]
+      const dow = DOW_S[d.getDay()]
+      const col = b.event_colour || '#c9a84c'
+      const bal = parseFloat(b.balance_due||0)
+      const ok  = bal <= 0
+      return `<div class="cal-list-item" onclick="editBooking('${b.booking_id}')">
+        <div class="cal-list-date" style="background:${col}14">
+          <div class="cal-list-date-d" style="color:${col}">${dd}</div>
+          <div class="cal-list-date-m">${mon}</div>
+          <div class="cal-list-date-dow">${dow}</div>
+        </div>
+        <div class="cal-list-stripe" style="background:${col}"></div>
+        <div class="cal-list-body">
+          <div class="cal-list-name">${x(b.client_name)}</div>
+          <div class="cal-list-meta">
+            <span>🎉 ${x(b._type||'—')}</span>
+            ${b.event_venue ? '<span>📍 '+x(b.event_venue)+'</span>' : ''}
+            ${b._time ? '<span>🕐 '+fmtTime12(b._time)+'</span>' : ''}
+          </div>
+        </div>
+        <span class="cal-list-badge ${ok?'ok':'due'}">${ok ? 'Paid' : 'Due Rs.'+Math.round(bal).toLocaleString('en-IN')}</span>
+      </div>`
+    }).join('')
+    return `<div class="cal-list-month"><div class="cal-list-month-hdr">${hdr}</div>${brows}</div>`
+  }).join('')
 }
 function makeDayCell(date, otherMonth) {
   const cell = document.createElement('div')
@@ -1412,25 +1787,33 @@ function renderMiniCal() {
   }
 }
 function renderUpcoming() {
-  const today = new Date().toISOString().split('T')[0]
-  const up = allBookings
-    .filter(b => b.start_date >= today && (b.payment_status||'').toLowerCase() !== 'cancelled')
-    .sort((a,b) => a.start_date.localeCompare(b.start_date))
-    .slice(0,8)
+  const today = localISO(new Date())
+  // Expand into per-slot rows for multi-event bookings
+  const rows = []
+  allBookings.filter(b => (b.payment_status||'').toLowerCase() !== 'cancelled').forEach(b => {
+    let slots = []
+    if (b.event_slots) { try { slots = JSON.parse(b.event_slots) } catch(e) {} }
+    if (!slots.length) slots = [{ date_iso: b.start_date, event_type: b.event_type }]
+    const nextSlot = slots.filter(s => (s.date_iso||'') >= today).sort((a,z) => a.date_iso.localeCompare(z.date_iso))[0]
+    if (nextSlot) rows.push({ ...b, _date: nextSlot.date_iso })
+  })
+  rows.sort((a,b) => a._date.localeCompare(b._date))
+  const up = rows.slice(0,8)
   const wrap = document.getElementById('upcoming-list')
+  if (!wrap) return
   if (!up.length) { wrap.innerHTML = '<div style="font-size:11px;color:var(--txt3)">No upcoming events</div>'; return }
   wrap.innerHTML = up.map(b => `
     <div class="upcoming-item" style="border-left-color:${b.event_colour||'var(--gold)'}" onclick="editBooking('${b.booking_id}')">
       <div class="ui-name">${x(b.client_name)}</div>
-      <div class="ui-date" style="color:${b.event_colour||'var(--gold)'}">${fmtDate(b.start_date)}${b.end_date !== b.start_date ? ' → ' + fmtDate(b.end_date) : ''}</div>
+      <div class="ui-date" style="color:${b.event_colour||'var(--gold)'}">Next: ${isoToDisplay(b._date)}</div>
       <div class="ui-type">${x(b.event_type)} · ${x(b.package_tier||'Silver')}</div>
     </div>`).join('')
 }
-function calPrev()  { calMonth--;  if (calMonth  < 0)  { calMonth  = 11; calYear--  } renderMainGrid() }
-function calNext()  { calMonth++;  if (calMonth  > 11) { calMonth  = 0;  calYear++  } renderMainGrid() }
-function calToday() { const n = new Date(); calYear = n.getFullYear(); calMonth = n.getMonth(); renderMainGrid() }
-function miniPrev() { miniMonth--; if (miniMonth < 0)  { miniMonth = 11; miniYear-- } renderMiniCal()  }
-function miniNext() { miniMonth++; if (miniMonth > 11) { miniMonth = 0;  miniYear++ } renderMiniCal()  }
+function calPrev()  { calMonth--;  if (calMonth  < 0)  { calMonth  = 11; calYear--  } miniMonth = calMonth; miniYear = calYear; renderMainGrid(); renderMiniCal() }
+function calNext()  { calMonth++;  if (calMonth  > 11) { calMonth  = 0;  calYear++  } miniMonth = calMonth; miniYear = calYear; renderMainGrid(); renderMiniCal() }
+function calToday() { const n = new Date(); calYear = n.getFullYear(); calMonth = n.getMonth(); miniYear = calYear; miniMonth = calMonth; renderMainGrid(); renderMiniCal() }
+function miniPrev() { calPrev() }  // synced to main nav
+function miniNext() { calNext() }  // synced to main nav
 
 /* ══════════════════════════════════════════════
    EVENT POPUP
@@ -1440,8 +1823,32 @@ function showPopup(b, evt) {
   const col = b.event_colour || 'var(--gold)'
   document.getElementById('pp-name').textContent  = b.client_name
   document.getElementById('pp-name').style.color  = col
-  document.getElementById('pp-dates').textContent = fmtDate(b.start_date) + (b.end_date !== b.start_date ? ' → ' + fmtDate(b.end_date) : '')
-  document.getElementById('pp-type').textContent  = b.event_type
+  // Parse slots for popup display
+  const _slots = (() => {
+    if (b.event_slots) { try { const s = JSON.parse(b.event_slots); if (s.length) return s } catch(e) {} }
+    return [{ event_type: b.event_type, date: fmtDate(b.start_date), date_iso: b.start_date, time: b.event_time }]
+  })()
+  const ppDates = document.getElementById('pp-dates')
+  const ppType  = document.getElementById('pp-type')
+  if (_slots.length === 1) {
+    const s = _slots[0]
+    const d = s.date || fmtDate(s.date_iso || '')
+    const t = s.time ? ' · ' + fmtTime12(s.time) : ''
+    ppDates.textContent = d + t
+    ppType.textContent  = s.event_type || b.event_type || '—'
+  } else {
+    ppDates.innerHTML = _slots.map((s, i) => {
+      const d  = s.date || fmtDate(s.date_iso || '')
+      const t  = s.time ? `<span style="color:var(--gold);font-size:10px"> · ${fmtTime12(s.time)}</span>` : ''
+      const et = s.event_type ? `<span style="color:var(--txt3);font-size:10px"> ${s.event_type}</span>` : ''
+      return `<div style="display:flex;align-items:center;gap:5px;padding:3px 0;${i<_slots.length-1?'border-bottom:1px solid var(--bdr)':''}">
+        <span style="background:var(--goldg);color:var(--gold);font-size:8px;font-weight:700;border-radius:99px;padding:1px 6px;flex-shrink:0;border:1px solid var(--goldbdr)">${i+1}</span>
+        <span style="font-size:11.5px;color:var(--txt)">${d}${t}</span>${et}
+      </div>`
+    }).join('')
+    const types = [...new Set(_slots.map(s => s.event_type).filter(Boolean))]
+    ppType.textContent = types.join(' · ') || b.event_type || '—'
+  }
   document.getElementById('pp-venue').textContent = b.event_venue || '—'
   document.getElementById('pp-bal').textContent   = 'Rs. ' + Number(b.balance_due||0).toLocaleString('en-IN')
   document.getElementById('pp-edit').onclick   = () => { closePopup(); editBooking(b.booking_id) }
